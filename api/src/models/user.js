@@ -1,8 +1,9 @@
 // src/models/Usuario.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const service = require('./service');
 
-const User = sequelize.define('Usuario', {
+const User = sequelize.define('usuarios', {
   nome: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -20,12 +21,21 @@ const User = sequelize.define('Usuario', {
     type: DataTypes.ENUM('cliente', 'profissional'),
     allowNull: false,
   },
+  criado_em: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  }
 }, {
   tableName: 'usuarios',
+  createdAt: false,
+  updatedAt: false
 });
 
-User.findByUsername = async function(username) {
-    return await this.findOne({ where: { username } });
+User.hasMany(service, { foreignKey: 'profissional_id' });
+service.belongsTo(Usuario, { foreignKey: 'profissional_id' });
+
+User.findByUsername = async function(nome) {
+    return await this.findOne({ where: { nome } });
   };
   
 module.exports = User;
