@@ -32,7 +32,6 @@ func PostLogin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	user, err := models.GetUserByUsername(db, creds.Username)
-	print(user.Nome)
 	if err != nil {
 		http.Error(w, "Usuário não encontrado", http.StatusUnauthorized)
 		return
@@ -44,22 +43,16 @@ func PostLogin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"message": "Login bem-sucedido!"})
-
 	token, err := utils.GenerateToken(user.ID)
 	if err != nil {
 		http.Error(w, "Erro ao gerar token", http.StatusInternalServerError)
 		return
 	}
+	response := map[string]string{
+		"message": "Login bem-sucedido!",
+		"token":   token,
+	}
 
-	json.NewEncoder(w).Encode(map[string]string{"token": token})
-}
-
-func GetServices(w http.ResponseWriter, r *http.Request, db *sql.DB, user models.User) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Você está autenticado!",
-		"user":    user,
-	})
+	json.NewEncoder(w).Encode(response)
 }

@@ -4,9 +4,11 @@ class AuthNetwork {
   Future<bool> postLogin(String username, String password) async {
     try {
       final response = await dio.post(
-        'postLogin',
+        '/postLogin',
         data: {'username': username, 'password': password},
       );
+
+      print('response $response');
 
       if (response.statusCode == 200) {
         return true;

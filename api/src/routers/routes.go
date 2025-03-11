@@ -4,19 +4,20 @@ import (
 	handlers "api/src/controllers"
 	"api/src/database"
 	"api/src/middleware"
-	"api/src/models"
 	"net/http"
 )
 
-func SetupRoutes() {
+func SetupRoutes() http.Handler {
+	mux := http.NewServeMux()
 	db := database.DB
-	http.HandleFunc("/postLogin", func(w http.ResponseWriter, r *http.Request) {
+
+	mux.HandleFunc("/postLogin", func(w http.ResponseWriter, r *http.Request) {
 		handlers.PostLogin(w, r, db)
 	})
+	mux.Handle("/getUsers", middleware.AuthMiddleware(db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetUsers(w, r, db)
+	})))
+	handler := middleware.CORS(mux)
 
-	protectedHandler := middleware.AuthMiddleware(db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user := r.Context().Value("user").(models.User)
-		handlers.GetServices(w, r, db, user)
-	}))
-	http.Handle("/protegida", protectedHandler)
+	return handler
 }
