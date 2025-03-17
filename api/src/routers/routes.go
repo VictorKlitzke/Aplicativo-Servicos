@@ -17,6 +17,9 @@ func SetupRoutes() http.Handler {
 	mux.Handle("/getUsers", middleware.AuthMiddleware(db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetUsers(w, r, db)
 	})))
+	mux.Handle("/getServices", middleware.AuthMiddleware(db)(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetServices(w, r, db)
+	})))
 	handler := middleware.CORS(mux)
 
 	return handler

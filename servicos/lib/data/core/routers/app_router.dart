@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:servicos/data/views/pages/profile_page.dart';
 import 'package:servicos/data/views/pages/search_page.dart';
-import 'package:servicos/main.dart';
 
 final GoRouter appRouters = GoRouter(
   routes: [

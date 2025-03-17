@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "434740252164",
+    "project_id": "aplicativo-services",
+    "storage_bucket": "aplicativo-services.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:434740252164:android:b0c2ae880848a5ba80af51",
+        "android_client_info": {
+          "package_name": "com.example.servicos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "434740252164-ncl3se0fdgrro0vs3etmuo7ldq0mhl7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJUsShgpD5g2N9pna6JoJN5UXkix4iEV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "434740252164-ncl3se0fdgrro0vs3etmuo7ldq0mhl7b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "434740252164-rauehniabopb1lfgplb7qeba9g7bcc9e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.servicos"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

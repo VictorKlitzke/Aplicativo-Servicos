@@ -27,7 +27,7 @@ func AuthMiddleware(db *sql.DB) func(http.Handler) http.Handler {
 			}
 
 			tokenString := tokenParts[1]
-			print("Token extracted: ", tokenString)
+			// print("Token extracted: ", tokenString)
 
 			token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 				return []byte(utils.JwtSecret), nil

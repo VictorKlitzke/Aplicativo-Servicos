@@ -4,7 +4,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 
 final dio = Dio(
   BaseOptions(
-    baseUrl: 'http://192.168.1.3:8080/',
+    baseUrl: 'http://192.168.1.4:8080/',
     headers: {'Content-Type': 'application/json'},
   ),
 );

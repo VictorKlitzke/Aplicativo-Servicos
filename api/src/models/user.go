@@ -48,7 +48,6 @@ func GetUsersAll(db *sql.DB) ([]User, error) {
 
 func GetUserByID(db *sql.DB, id int) (User, error) {
 	var user User
-
 	query := `SELECT id FROM usuarios WHERE id = ?`
 	err := db.QueryRow(query, id).Scan(&user.ID)
 	if err != nil {

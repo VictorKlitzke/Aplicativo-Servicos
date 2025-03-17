@@ -27,5 +27,21 @@ func GetUsers(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func GetServices(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-
+	service, ok := r.Context().Value("service").(models.Services)
+	print(service.Servico)
+	if !ok {
+		http.Error(w, "Serviços não encontrados", http.StatusNotFound)
+		return
+	}
+	services, err := models.GetServicesAll(db)
+	if err != nil {
+		http.Error(w, "Erro ao buscar serviços", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"message":  "Lista de serviços recuperada com sucesso!",
+		"service":  service,
+		"services": services,
+	})
 }
