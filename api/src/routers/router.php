@@ -1,17 +1,20 @@
 <?php
 namespace App\Routers;
 
+use App\controllers\Get;
 use App\Controllers\Post;
 use App\Utils\Response;
-
 class Router
 {
     private $routes = [];
 
     public function __construct()
     {
-        $this->addRoute('POST', '/api/postLogin', [new Post(), 'postLogin']);        // $this->addRoute('GET', '/api/users', [new UserController(), 'getUsers']);
+        $this->addRoute('POST', '/api/postCategoryServices', [new Post(), 'postCategoryServices']); 
+        $this->addRoute('POST', '/api/postLogin', [new Post(), 'postLogin']); 
         // $this->addRoute('POST', '/api/users', [new UserController(), 'createUser']);
+        $this->addRoute('GET','/api/getLogin', [new Get(),'getLogin']);
+        $this->addRoute('GET','/api/getServices', [new Get(),'getServices']);
     }
 
     public function addRoute($method, $path, $handler)

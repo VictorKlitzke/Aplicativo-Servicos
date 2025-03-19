@@ -15,17 +15,27 @@ use Exception;
         }
     
         public static function decode($token) {
-            list($header, $payload, $signature) = explode('.', $token);
-    
+            print($token);
+            if (!is_string($token)) {
+                throw new Exception('Token inválido: formato incorreto.');
+            }
+        
+            $parts = explode('.', $token);
+            if (count($parts) !== 3) {
+                throw new Exception('Token inválido: estrutura incorreta.');
+            }
+        
+            list($header, $payload, $signature) = $parts;
+        
             $valid = hash_hmac('sha256', "$header.$payload", getenv('JWT_SECRET'), true);
             $valid = self::base64UrlEncode($valid);
-    
+        
             if ($signature !== $valid) {
                 throw new Exception('Token inválido.');
             }
-    
+        
             return json_decode(self::base64UrlDecode($payload), true);
-        }
+        }        
     
         private static function base64UrlEncode($data) {
             return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
