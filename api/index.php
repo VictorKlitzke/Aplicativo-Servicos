@@ -1,14 +1,14 @@
 <?php
 
+use App\http\Routers;
 use Dotenv\Dotenv;
-use App\Routers\Router;
-
+use App\Core\Core;
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/src/routers/main.php';
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-$router = new Router();
-$router->run();
+Core::dispatch(Routers::router());
 
 ?>

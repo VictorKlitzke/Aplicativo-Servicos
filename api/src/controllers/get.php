@@ -2,7 +2,7 @@
 namespace App\controllers;
 
 use App\Services\Db;
-use App\Utils\Response;
+use App\Http\Response;
 use App\Utils\ValidationToken;
 use Exception;
 use PDO;

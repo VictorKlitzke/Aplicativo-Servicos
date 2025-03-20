@@ -1,18 +1,20 @@
 <?php
-namespace App\controllers;
+namespace App\Controllers;
 
 use App\Services\Db;
 use App\Utils\Input;
 use App\Utils\JWT;
-use App\Utils\Response;
+use App\Http\Response;
 use App\Utils\ValidationToken;
+use App\Utils\Validator;
 use Exception;
 use PDO;
 
 class Post
 {
 
-    public function postUsers() {
+    public function postUsers()
+    {
         $data = Input::data();
         if (empty($data['username']) || empty($data['password'])) {
             Response::json(false, 'Usuário ou senha incompletas.', 400);
@@ -21,10 +23,11 @@ class Post
         try {
 
         } catch (Exception $e) {
-            Response::json(false, $e->getMessage(),400);
+            Response::json(false, $e->getMessage(), 400);
         }
     }
-    public function postCategoryServices() {
+    public function postCategoryServices()
+    {
 
         $token = ValidationToken::getBearerToken();
         if (!$token) {
@@ -36,7 +39,7 @@ class Post
             Response::json(false, 'Token inválido.', 401);
         }
 
-        
+
         $data = Input::data();
         if (empty($data['services']) || empty($data['description'])) {
             Response::json(false, 'Nome da categoria é obrigatório.', 400);
@@ -58,18 +61,16 @@ class Post
             Response::json(true, 'Categorias cadastradas com sucesso.', 200, ['id' => $pdo->lastInsertId()]);
 
         } catch (Exception $e) {
-            Response::json(false, $e->getMessage(),400);
+            Response::json(false, $e->getMessage(), 400);
         }
     }
     public function postLogin()
     {
         $data = Input::data();
-        if (empty($data['username']) || empty($data['password'])) {
-            Response::json(false, 'Usuário ou senha incompletas', statusCode: 400);
-        }
-
         $username = $data['username'];
         $password = $data['password'];
+
+        Validator::validator(['username' => $username, 'password' => $password]);
 
         try {
             $stmt = Db::Connection()->prepare("SELECT id, nome, senha FROM usuarios WHERE nome = :nome");
