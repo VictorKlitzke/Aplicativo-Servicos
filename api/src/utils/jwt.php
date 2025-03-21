@@ -15,7 +15,6 @@ use Exception;
         }
     
         public static function decode($token) {
-            print($token);
             if (!is_string($token)) {
                 throw new Exception('Token inválido: formato incorreto.');
             }
