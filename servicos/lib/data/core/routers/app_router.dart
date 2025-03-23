@@ -5,11 +5,13 @@ import 'package:servicos/data/views/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:servicos/data/views/pages/profile_page.dart';
+import 'package:servicos/data/views/pages/register_page.dart';
 import 'package:servicos/data/views/pages/search_page.dart';
 
 final GoRouter appRouters = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => LoginPage()),
+    GoRoute(path: '/registerpage', builder: (context, state) => RegisterPage()),
     GoRoute(
       path: '/homepage',
       builder: (context, state) => BaseLayout(body: HomePage()),

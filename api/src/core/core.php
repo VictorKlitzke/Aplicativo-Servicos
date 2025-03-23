@@ -9,7 +9,7 @@ class Core
 {
     public static function dispatch(array $routers)
     {
-        $url = str_replace('/api', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+        $url = str_replace('/Aplicativo/api', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         $prefixController = 'App\\Controllers\\';
 
         foreach ($routers as $router) {

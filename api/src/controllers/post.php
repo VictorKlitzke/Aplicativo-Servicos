@@ -80,14 +80,28 @@ class Post
 
             if (!$user || !password_verify($password, $user['senha'])) {
                 Response::json(false, 'Credenciais inválidas.', 400);
+                exit();
             }
 
-            $token = JWT::encode(['id' => $user['id'], 'username' => $user['nome']]);
+            $tokenPayload = [
+                'id' => $user['id'],
+                'username' => $user['nome'],
+                'iat' => time(),
+                'exp' => time() + (60 * 60 * 24)
+            ];
+            $token = JWT::encode($tokenPayload);
 
-            Response::json(true, 'Login realizado com sucesso.', 200, ['token' => $token, 'id' => $user['id']]);
+            Response::json(true, 'Login realizado com sucesso.', 200, [
+                'token' => $token,
+                'id' => $user['id']
+            ]);
+            exit();
+
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
+            exit();
         }
     }
+
 }
 ?>

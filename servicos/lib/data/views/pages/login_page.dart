@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:servicos/data/core/repository/auth_repository.dart';
+import 'package:servicos/data/views/components/app_colors_components.dart';
+import 'package:servicos/data/views/components/button_components.dart';
 // import 'package:servicos/data/core/repository/google_api_repository.dart';
 
 class LoginPage extends StatefulWidget {
@@ -110,31 +112,36 @@ class _LoginPageState extends State<LoginPage> {
                                       : null,
                         ),
                         SizedBox(height: 24.0),
-                        ElevatedButton(
-                          onPressed:
-                              isLoading ? null : () => postLogin(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue.shade700,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 100,
-                              vertical: 15,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            PadraoButton(
+                              onPressed: () => postLogin(context),
+                              text: 'Logar',
+                              textColor: AppColorsComponents.background,
+                              backgroundColor: AppColorsComponents.primaryDark,
+                              fontSize: 14,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 6,
+                              ),
+                              textAlign: Alignment.bottomLeft,
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+
+                            SizedBox(height: 12),
+                            PadraoButton(
+                              onPressed: () => {context.go('/registerpage')},
+                              text: 'Registrar-se',
+                              textColor: AppColorsComponents.background,
+                              backgroundColor: AppColorsComponents.primaryDark,
+                              fontSize: 14,
+                              padding: EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 6,
+                              ),
+                              textAlign: Alignment.bottomRight,
                             ),
-                          ),
-                          child:
-                              isLoading
-                                  ? CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                  : Text(
-                                    'Entrar',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                          ],
                         ),
                         SizedBox(height: 16.0),
                         Text('Ou faça login com'),

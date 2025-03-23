@@ -12,6 +12,7 @@ class PadraoButton extends StatelessWidget {
   final double borderRadius;
   final double elevation;
   final IconData? icon;
+  final bool useSpaceBetween;
 
   PadraoButton({
     required this.onPressed,
@@ -25,43 +26,56 @@ class PadraoButton extends StatelessWidget {
     this.borderRadius = 4.0,
     this.elevation = 4.0,
     this.icon,
+    this.useSpaceBetween = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: textAlign,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: textColor,
-          backgroundColor: backgroundColor,
-          padding: padding,
-          elevation: elevation,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
+      child: SizedBox(
+        width: 140,
+        height: 50,
+        child: ElevatedButton(
+          onPressed: isLoading ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            foregroundColor: textColor,
+            backgroundColor: backgroundColor,
+            padding: padding,
+            elevation: elevation,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
           ),
-        ),
-        child:
-            isLoading
-                ? SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: textColor,
-                    strokeWidth: 3,
-                  ),
-                )
-                : Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (icon != null) ...[
-                      Icon(icon, color: textColor),
-                      SizedBox(width: 8),
+          child:
+              isLoading
+                  ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: textColor,
+                      strokeWidth: 3,
+                    ),
+                  )
+                  : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment:
+                        useSpaceBetween
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.center,
+                    children: [
+                      if (icon != null) ...[
+                        Icon(icon, color: textColor),
+                        SizedBox(width: 8),
+                      ],
+                      Text(
+                        text,
+                        style: TextStyle(fontSize: fontSize),
+                        textAlign: TextAlign.center,
+                      ),
                     ],
-                    Text(text, style: TextStyle(fontSize: fontSize)),
-                  ],
-                ),
+                  ),
+        ),
       ),
     );
   }
