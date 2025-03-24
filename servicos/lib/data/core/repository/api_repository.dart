@@ -20,7 +20,11 @@ class GetServices {
 class PostRepository {
   Future<bool> postRegister(UsersModels users) async {
     try {
-      final response = await dio.post('postRegister', data: users);
+      print('Enviando dados: ${users.toJson()}');
+      final response = await dio.post(
+        'postRegisterUsers',
+        data: users.toJson(),
+      );
       if (response.statusCode == 200) {
         return true;
       } else {

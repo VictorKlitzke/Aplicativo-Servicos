@@ -1,24 +1,24 @@
 class UsersModels {
   String nome;
   String email;
-  String password;
+  String senha;
   String telefone;
   String userType;
 
   UsersModels({
     required this.nome,
     required this.email,
-    required this.password,
+    required this.senha,
     required this.telefone,
     required this.userType,
   });
 
-  Map<String, String> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'nome': nome,
       'email': email,
       'telefone': telefone,
-      'password': password,
+      'password': senha,
       'userType': userType,
     };
   }

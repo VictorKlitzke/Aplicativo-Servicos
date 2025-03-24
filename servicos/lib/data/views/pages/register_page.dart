@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:servicos/data/core/controllers/registers_controllers.dart';
 import 'package:servicos/data/core/utils/validador_utils.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 import 'package:servicos/data/views/components/button_components.dart';
@@ -11,33 +12,23 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-
+  late RegisterController registerController;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String userType = 'Cliente';
 
-  void Validate() {}
-
-  // void registerUser() async{
-  //   final data = {
-  //     'name': nameController.text,
-  //     'email': emailController.text,
-  //     'phone': phoneController.text,
-  //     'password': passwordController.text,
-  //     'userType': userType,
-  //   };
-
-  //   try {
-  //     if (!_formKey.currentState.validate()) {
-  //       return;
-  //     }
-  //     bool success = await
-  //   } catch (error) {
-  //     print('Erro ao registrar: $error');
-  //   }
-  // }
+  void initState() {
+    super.initState();
+    registerController = RegisterController(
+      nameController: nameController,
+      emailController: emailController,
+      phoneController: phoneController,
+      passwordController: passwordController,
+      userType: userType,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +46,8 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Padding(
               padding: EdgeInsets.all(30.0),
               child: Form(
-                key: _formKey,
                 child: Column(
+                  key: _formKey,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
@@ -103,7 +94,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         PadraoButton(
-                          onPressed: () => {print('')},
+                          onPressed:
+                              () => registerController.registerUser(context),
                           text: 'Registrar',
                           textColor: AppColorsComponents.background,
                           backgroundColor: AppColorsComponents.primaryDark,

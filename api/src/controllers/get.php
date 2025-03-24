@@ -22,17 +22,6 @@ class Get
     {
         try {
             $pdo = self::getDbConnection();
-            $query = 'SELECT 
-                        s.nome AS servicos,
-                        s.descricao AS descricaoServicos,
-                        s.preco,
-                        cs.nome AS categoria_servicos,
-                        u.nome AS profissional
-                      FROM servicos s 
-                      JOIN usuarios u ON u.id = s.profissional_id
-                      JOIN categorias_servicos cs ON cs.id = s.categoria_id';
-
-            $pdo = Db::Connection();
             $query = 'SELECT
                         S.TITULO SERVICO,
                         CS.NOME CATEGORIA,
