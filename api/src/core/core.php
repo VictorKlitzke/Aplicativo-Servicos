@@ -13,7 +13,7 @@ class Core
         $prefixController = 'App\\Controllers\\';
 
         foreach ($routers as $router) {
-            $patterns = "#^" . preg_quote($router['path'], '#') . "$#";
+            $patterns = "#^" . preg_replace('/\{(\w+)\}/', '([\w-]+)', $router['path']) . "$#";
 
             if (preg_match($patterns, $url, $matches)) {
                 array_shift($matches); 

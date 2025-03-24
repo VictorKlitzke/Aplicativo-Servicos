@@ -13,6 +13,9 @@ use PDO;
 class Post
 {
 
+    private static function getDbConnection() {
+        return Db::connection();
+    }
     public function postUsers()
     {
         $data = Input::data();
@@ -49,7 +52,7 @@ class Post
         $description = $data['description'];
 
         try {
-            $pdo = Db::Connection();
+            $pdo = self::getDbConnection();
             $stmt = $pdo->prepare("INSERT INTO categorias_servicos (nome, descricao) VALUES (:nome, :descricao)");
             $stmt->bindParam("descricao", $description, PDO::PARAM_STR);
             $stmt->bindParam("nome", $services, PDO::PARAM_STR);
