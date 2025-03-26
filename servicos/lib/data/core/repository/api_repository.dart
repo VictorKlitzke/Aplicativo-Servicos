@@ -2,17 +2,19 @@ import 'package:servicos/data/core/models/users_models.dart';
 import 'package:servicos/data/core/repository/dio_repository.dart';
 
 class GetServices {
-  Future<List<Map<String, dynamic>>> getOrders() async {
+  Future<UsersModels?> getLogin() async {
     try {
-      final response = await dio.get('getPedidos');
-      if (response.data != null || response.data['getPedidos']) {
-        return List<Map<String, dynamic>>.from(response.data['getuser']);
+      final response = await dio.get('getLogin');
+      print('Response data: ${response.data}');
+      if (response.data != null ||
+          response.data['getLogin'] && response.data is Map<String, dynamic>) {
+        return UsersModels.fromJson(response.data);
       } else {
-        return [];
+        return null;
       }
     } catch (error) {
       print('erro ao consultar a api: $error');
-      return [];
+      return null;
     }
   }
 }

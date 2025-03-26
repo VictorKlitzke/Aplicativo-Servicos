@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:servicos/data/core/models/users_models.dart';
 import 'package:servicos/data/core/repository/api_repository.dart';
 
@@ -30,9 +31,7 @@ class RegisterController {
     bool success = await apiService.postRegister(user);
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Usuário registrado com sucesso!')),
-      );
+      context.go('/');
     } else {
       ScaffoldMessenger.of(
         context,

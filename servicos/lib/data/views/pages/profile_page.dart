@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:servicos/data/core/models/users_models.dart';
+import 'package:servicos/data/core/repository/api_repository.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -7,6 +9,32 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final GetServices getServices = GetServices();
+
+  List<Map<String, dynamic>> getLogin = [];
+
+  UsersModels? usuario;
+
+  String nome = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLogin();
+  }
+
+  void fetchLogin() async {
+    try {
+      final result = await getServices.getLogin();
+      setState(() {
+        usuario = result;
+      });
+      print(usuario!.nome);
+    } catch (error) {
+      print('Error fetching login: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +114,10 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 8),
               _buildProfessionalDetail('Serviço', 'Designer Gráfico'),
               _buildProfessionalDetail('Telefone', '(11) 98765-4321'),
-              _buildProfessionalDetail('Nome', 'João Silva'),
+              _buildProfessionalDetail(
+                'Nome',
+                usuario!.nome.toString() ?? 'Nome',
+              ),
               _buildProfessionalDetail('Email', 'joao@email.com'),
             ],
           ),
