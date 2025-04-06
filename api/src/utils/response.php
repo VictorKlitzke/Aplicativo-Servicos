@@ -14,7 +14,6 @@ class Response
             'statusCode' => $statusCode
         ];
     
-        // Se houver dados extras, mescla com a resposta
         if (!empty($data)) {
             $response = array_merge($response, $data);
         }

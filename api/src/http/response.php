@@ -3,24 +3,20 @@ namespace App\Http;
 
 class Response
 {
-    public static function json($success, $message, $statusCode = null, $data = [])
+    public static function json($success, $message, $statusCode = null, $data = [], $error = null)
     {
+        ob_start();
         http_response_code($statusCode);
-        header('Content-Type: application/json');
-        
-        $response = [
+        Request::header();
+
+        echo json_encode([
             'success' => $success,
             'message' => $message,
-            'statusCode' => $statusCode
-        ];
-    
-        // Se houver dados extras, mescla com a resposta
-        if (!empty($data)) {
-            $response = array_merge($response, $data);
-        }
-    
-        echo json_encode($response);
+            'statusCode' => $statusCode,
+            ...($data ?? []),
+            ...(isset($error) && $error !== '' && $error !== [] ? ['error' => $error] : [])
+        ], JSON_THROW_ON_ERROR);
         exit;
     }
-    
+
 }

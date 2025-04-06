@@ -6,15 +6,16 @@ use Exception;
 
 class Validator
 {
-    public static function validator(array $fields)
+    public static function validator(array $data)
     {
-        foreach ($fields as $field => $value) {
-            if (empty(trim($value))) {
-                Response::json(false, 'Campos tem que está preenchidos', 401);
+        foreach ($data as $key => $value) {
+            if (!is_scalar($value)) {
+                continue;
             }
+            $data[$key] = trim((string) $value);
         }
-        return $fields;
     }
+
 }
 
 ?>

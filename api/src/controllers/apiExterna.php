@@ -48,11 +48,9 @@ class ApiExterna
 
             $data = json_decode($response, true);
 
-            // Retorna a resposta
             Response::json(true, "CEP encontrado.", 200, ["endereco" => $data]);
 
         } catch (Exception $e) {
-            // Retorna um erro em caso de exceção
             Response::json(false, "Erro ao buscar CEP: " . $e->getMessage(), 500);
         }
     }

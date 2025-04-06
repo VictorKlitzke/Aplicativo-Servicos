@@ -13,43 +13,65 @@ use PDO;
 class Post
 {
 
-    private static function getDbConnection() {
+    private static function getDbConnection()
+    {
         return Db::connection();
     }
-    public function postUsers()
+
+    public function postRegisterUsers()
     {
         $data = Input::data();
-        if (empty($data['username']) || empty($data['password'])) {
-            Response::json(false, 'Usuário ou senha incompletas.', 400);
-        }
+        $name = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $phone = $data['telefone'];
+        $userType = $data['userType'];
+
+        Validator::validator([
+            'userType' => $userType,
+            'email' => $email,
+            'password' => $password,
+            'telefone' => $phone
+        ]);
 
         try {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $pdo = self::getDbConnection();
+            $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, telefone, tipo) 
+                                VALUES (:nome, :email, :senha, :telefone, :tipo)");
+            $stmt->bindParam("nome", $name, PDO::PARAM_STR);
+            $stmt->bindParam("email", $email, PDO::PARAM_STR);
+            $stmt->bindParam("telefone", $phone, PDO::PARAM_STR);
+            $stmt->bindParam("senha", $hashed_password, PDO::PARAM_STR);
+            $stmt->bindParam("tipo", $userType, PDO::PARAM_STR);
 
+            $stmt->execute();
+
+            // $id_prof = $pdo->lastInsertId();
+
+            // $prof = $pdo->prepare("INSERT INTO profissional () VALUES ()");
+
+            Response::json(true, 'Login realizado com sucesso.', 200);
+            exit();
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
         }
     }
+
     public function postCategoryServices()
     {
 
-        $token = ValidationToken::getBearerToken();
-        if (!$token) {
-            Response::json(false, 'Token não fornecido.', 401);
-        }
-
-        $userId = ValidationToken::validateToken($token);
-        if (!$userId) {
-            Response::json(false, 'Token inválido.', 401);
-        }
-
-
+        $token = ValidationToken::getBearerToken() ?: Response::json(false, 'Token não fornecido.', 401);
         $data = Input::data();
-        if (empty($data['services']) || empty($data['description'])) {
-            Response::json(false, 'Nome da categoria é obrigatório.', 400);
-        }
-
+        $userId = ValidationToken::validateToken($token) ?: Response::json(false, 'Token inválido.', 401);;
+   
         $services = $data['services'];
         $description = $data['description'];
+
+        Validator::validator([
+            'services' => $services,
+            'description' => $description
+        ]);
 
         try {
             $pdo = self::getDbConnection();
@@ -76,7 +98,15 @@ class Post
         Validator::validator(['username' => $username, 'password' => $password]);
 
         try {
-            $stmt = Db::Connection()->prepare("SELECT id, nome, senha FROM usuarios WHERE nome = :nome");
+            $pdo = self::getDbConnection();
+            $stmt = $pdo->prepare("SELECT 
+                                                u.id, 
+                                                u.nome, 
+                                                u.senha
+                                            FROM 
+                                                usuarios u 
+                                            WHERE 
+                                                u.nome = :nome");
             $stmt->bindParam("nome", $username, PDO::PARAM_STR);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -105,6 +135,5 @@ class Post
             exit();
         }
     }
-
 }
 ?>

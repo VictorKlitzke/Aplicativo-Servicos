@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:servicos/data/core/models/users_models.dart';
 import 'package:servicos/data/core/repository/api_repository.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 
@@ -13,8 +12,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<Map<String, dynamic>> getLogin = [];
 
-  UsersModels? usuario;
-
   String nome = "";
 
   @override
@@ -26,10 +23,12 @@ class _ProfilePageState extends State<ProfilePage> {
   void fetchLogin() async {
     try {
       final result = await getServices.getLogin();
+      if (result.isNotEmpty) {
+        nome = result[0]['nome'];
+      }
       setState(() {
-        usuario = result;
+        getLogin = result;
       });
-      print(usuario!.nome);
     } catch (error) {
       print('Error fetching login: $error');
     }
@@ -114,10 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 8),
               _buildProfessionalDetail('Serviço', 'Designer Gráfico'),
               _buildProfessionalDetail('Telefone', '(11) 98765-4321'),
-              _buildProfessionalDetail(
-                'Nome',
-                usuario!.nome.toString() ?? 'Nome',
-              ),
+              _buildProfessionalDetail('Nome', nome),
               _buildProfessionalDetail('Email', 'joao@email.com'),
             ],
           ),

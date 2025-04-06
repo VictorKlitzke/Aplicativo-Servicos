@@ -6,7 +6,7 @@ use Exception;
         public static function getBearerToken() {
             $headers = getallheaders();
             if (isset($headers['Authorization']) && str_starts_with($headers['Authorization'], 'Bearer ')) {
-                return substr($headers['Authorization'], 7); // Retorna o token
+                return substr($headers['Authorization'], 7); 
             }
             return null;
         }

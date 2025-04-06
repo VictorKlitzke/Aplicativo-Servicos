@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\libs\Libs;
 use App\Services\Db;
 use App\Http\Response;
 use App\Utils\ValidationToken;
+use App\Utils\Validator;
 use Exception;
 use PDO;
 
@@ -13,33 +15,38 @@ use PDO;
 class Get
 {
 
-    private static function getDbConnection(): PDO
-    {
-        return Db::Connection();
-    }
-
     public static function getServices(): void
     {
         try {
+
+            $joins = [
+                [
+                    "type" => "INNER",
+                    "table" => "CATEGORIAS_SERVICOS CS",
+                    "on" => "CS.ID = S.CATEGORIA_ID",
+                ],
+                [
+                    "type" => "INNER",
+                    "table" => "USUARIOS U",
+                    "on" => "U.ID = P.USUARIO_ID",
+                ],
+                [
+                    "type" => "INNER",
+                    "table" => "PROFISSIONAIS P",
+                    "on" => "P.ID = S.PROFISSIONAL_ID",
+                ],
+            ];
             $pdo = self::getDbConnection();
-            $query = 'SELECT
+
+            $result = Libs::selectDB("SERVICOS S ", [], $joins, 'SELECT
                         S.TITULO SERVICO,
                         CS.NOME CATEGORIA,
                         S.DESCRICAO DESCRICAOSERVICO,
                         S.PRECO,
                         S.DURACAO DURACAOSERVICO,
-                        U.NOME PROFISSIONAL
-                    FROM
-                        SERVICOS S 
-                        JOIN CATEGORIAS_SERVICOS CS ON CS.ID = S.CATEGORIA_ID
-                        JOIN PROFISSIONAIS P ON P.ID = S.PROFISSIONAL_ID
-                        JOIN USUARIOS U ON U.ID = P.USUARIO_ID 
-            ';
-            $stmt = $pdo->prepare($query);
-            $stmt->execute();
-            $services = $stmt->fetchAll();
+                        U.NOME PROFISSIONAL', $pdo);
 
-            Response::json(true, 'Lista de serviços', 200, ['serviços' => $services]);
+            Response::json(true, 'Lista de serviços', 200, ['serviços' => $result[0]]);
 
         } catch (Exception $e) {
             Response::json(false, 'Erro ao obter serviços: ' . $e->getMessage(), 500);
@@ -47,21 +54,25 @@ class Get
     }
     public static function getLogin()
     {
+        $token = ValidationToken::getBearerToken() ?? Response::json(false, 'Token não fornecido.', 401);
+        $userId = ValidationToken::validateToken($token) ?? Response::json(false, 'Token inválido.', 401);
+
+        var_dump($userId);
+
+        Validator::validator(['userId' => $userId]);
         try {
-            $token = ValidationToken::getBearerToken() ?: Response::json(false, 'Token não fornecido.', 401);
-            $userId = ValidationToken::validateToken($token) ?: Response::json(false, 'Token inválido.', 401);
 
-            $pdo = self::getDbConnection();
-            $stmt = $pdo->prepare("SELECT id, nome, email FROM usuarios WHERE id = :id");
-            $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $pdo = Db::Connection();
+            $filters = ['id' => $userId];
+            $result = Libs::selectDB(
+                'usuarios u', 
+                $pdo,
+                $filters, 
+                [], 
+                'id, nome, email, telefone, cep, estado, cpfcnpj, cidade, foto_perfil'
+            );
 
-            if (!$user) {
-                Response::json(false, 'Usuário não encontrado.', 404);
-            }
-
-            Response::json(true, 'Usuário autenticado.', 200, ['user' => $user]);
+            Response::json(true, 'Lista de usuarios.', 200, ['user' => $result]);
 
         } catch (Exception $e) {
             Response::json(false, 'Erro ao obter usuário: ' . $e->getMessage(), 500);
