@@ -17,6 +17,10 @@ class Get
 
     public static function getServices(): void
     {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+
+        Validator::validator(['userId' => $userId]);
         try {
 
             $joins = [
@@ -36,7 +40,7 @@ class Get
                     "on" => "P.ID = S.PROFISSIONAL_ID",
                 ],
             ];
-            $pdo = self::getDbConnection();
+            $pdo = Db::Connection();
 
             $result = Libs::selectDB("SERVICOS S ", [], $joins, 'SELECT
                         S.TITULO SERVICO,
@@ -54,8 +58,10 @@ class Get
     }
     public static function getLogin()
     {
-        $token = ValidationToken::getBearerToken() ?? Response::json(false, 'Token não fornecido.', 401);
-        $userId = ValidationToken::validateToken($token) ?? Response::json(false, 'Token inválido.', 401);
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+
+        Validator::validator(['userId' => $userId]);
 
         var_dump($userId);
 
@@ -69,10 +75,10 @@ class Get
                 $pdo,
                 $filters, 
                 [], 
-                'id, nome, email, telefone, cep, estado, cpfcnpj, cidade, foto_perfil'
+                'id, nome, email, telefone, cep, estado, cpfcnpj, cidade, foto_perfil, data_cadastro, tipo'
             );
 
-            Response::json(true, 'Lista de usuarios.', 200, ['user' => $result]);
+            Response::json(true, 'Lista de usuarios.', 200, ['getLogin' => $result]);
 
         } catch (Exception $e) {
             Response::json(false, 'Erro ao obter usuário: ' . $e->getMessage(), 500);

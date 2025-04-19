@@ -3,11 +3,11 @@ namespace App\Controllers;
 
 use App\Services\Db;
 use App\Utils\Input;
-use App\Utils\JWT;
 use App\Http\Response;
 use App\Utils\ValidationToken;
 use App\Utils\Validator;
 use Exception;
+use Firebase\JWT\JWT;
 use PDO;
 
 class Post
@@ -57,14 +57,13 @@ class Post
             Response::json(false, $e->getMessage(), 400);
         }
     }
-
     public function postCategoryServices()
     {
 
-        $token = ValidationToken::getBearerToken() ?: Response::json(false, 'Token não fornecido.', 401);
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
         $data = Input::data();
-        $userId = ValidationToken::validateToken($token) ?: Response::json(false, 'Token inválido.', 401);;
-   
+
         $services = $data['services'];
         $description = $data['description'];
 
@@ -92,22 +91,23 @@ class Post
     public function postLogin()
     {
         $data = Input::data();
-        $username = $data['username'];
-        $password = $data['password'];
+        $email = $data['email'];
+        $password = $data['senha'];
 
-        Validator::validator(['username' => $username, 'password' => $password]);
+        Validator::validator(['email' => $email, 'senha' => $password]);
 
         try {
             $pdo = self::getDbConnection();
             $stmt = $pdo->prepare("SELECT 
-                                                u.id, 
-                                                u.nome, 
-                                                u.senha
-                                            FROM 
-                                                usuarios u 
-                                            WHERE 
-                                                u.nome = :nome");
-            $stmt->bindParam("nome", $username, PDO::PARAM_STR);
+                                            u.id, 
+                                            u.nome, 
+                                            u.senha,
+                                            u.email
+                                        FROM 
+                                            usuarios u 
+                                        WHERE 
+                                            u.email = :email");
+            $stmt->bindParam("email", $email, PDO::PARAM_STR);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -118,14 +118,22 @@ class Post
 
             $tokenPayload = [
                 'id' => $user['id'],
-                'username' => $user['nome'],
                 'iat' => time(),
-                'exp' => time() + (60 * 60 * 24)
+                'exp' => time() + 3600
             ];
-            $token = JWT::encode($tokenPayload);
+            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET'], "HS256");
+
+            setcookie('session_token', $token, [
+                'expires' => time() + 3600,
+                'path' => '/',
+                'domain' => '',
+                'secure' => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
 
             Response::json(true, 'Login realizado com sucesso.', 200, [
-                'token' => $token,
+                'nome' => $user['nome'],
                 'id' => $user['id']
             ]);
             exit();

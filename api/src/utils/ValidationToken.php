@@ -1,24 +1,37 @@
-<?php 
+<?php
+
 namespace App\Utils;
-use App\Utils\JWT;
+
 use Exception;
-    class ValidationToken {
-        public static function getBearerToken() {
-            $headers = getallheaders();
-            if (isset($headers['Authorization']) && str_starts_with($headers['Authorization'], 'Bearer ')) {
-                return substr($headers['Authorization'], 7); 
-            }
-            return null;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+class ValidationToken
+{
+    public static function getBearerToken()
+    {
+        if (isset($_COOKIE['session_token'])) {
+            return $_COOKIE['session_token'];
         }
-    
-        public static function validateToken($token) {
+        return null;
+    }
+
+    public static function validateToken()
+    {
+        if (isset($_COOKIE['session_token'])) {
+            $token = $_COOKIE['session_token'];
             try {
-                $decoded = JWT::decode($token);
-                return $decoded['id'] ?? null;
+                $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+
+                if (isset($decoded->id)) {
+                    return $decoded->id;
+                }
+                return null;
             } catch (Exception $e) {
+                error_log("Erro ao decodificar token: " . $e->getMessage());
                 return null;
             }
         }
+        return null;
     }
-
-?>
+}
