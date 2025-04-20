@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import LoginPage from "./views/pages/login_page";
+import LoginPage from "./views/pages/auth/login_page";
 import PrivateRoute from "./routers/privateRouter";
 import HomePage from "./views/home_page";
 import NotFoundPage from "./error/Founderror";

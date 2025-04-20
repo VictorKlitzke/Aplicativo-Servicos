@@ -90,57 +90,66 @@ class Post
     }
     public function postLogin()
     {
-        $data = Input::data();
-        $email = $data['email'];
-        $password = $data['senha'];
-
-        Validator::validator(['email' => $email, 'senha' => $password]);
-
         try {
+            $data = Input::data();
+
+
+
+            $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+            $password = $data['senha'];
+
+            Validator::validator(['email' => $email, 'password' => $password]);
+
             $pdo = self::getDbConnection();
             $stmt = $pdo->prepare("SELECT 
-                                            u.id, 
-                                            u.nome, 
-                                            u.senha,
-                                            u.email
-                                        FROM 
-                                            usuarios u 
-                                        WHERE 
-                                            u.email = :email");
-            $stmt->bindParam("email", $email, PDO::PARAM_STR);
+                                    u.id, 
+                                    u.nome, 
+                                    u.senha,
+                                    u.email
+                                  FROM 
+                                    usuarios u 
+                                  WHERE 
+                                    u.email = :email");
+            $stmt->bindParam(":email", $email, PDO::PARAM_STR);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$user || !password_verify($password, $user['senha'])) {
-                Response::json(false, 'Credenciais inválidas.', 400);
-                exit();
+            if (!$user) {
+                Response::json(false, 'Credenciais inválidas.', 404);
+            }
+
+            if (!password_verify($password, $user['senha'])) {
+                Response::json(false, 'Credenciais inválidas.', 404);
             }
 
             $tokenPayload = [
-                'id' => $user['id'],
+                'sub' => $user['id'],
+                'name' => $user['nome'],
                 'iat' => time(),
                 'exp' => time() + 3600
             ];
+
             $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET'], "HS256");
 
             setcookie('session_token', $token, [
                 'expires' => time() + 3600,
+                // 'expires' => time() + 15,
                 'path' => '/',
-                'domain' => '',
-                'secure' => isset($_SERVER['HTTPS']),
                 'httponly' => true,
-                'samesite' => 'Lax',
+                'samesite' => 'Strict',
+                'secure' => false
             ]);
 
-            Response::json(true, 'Login realizado com sucesso.', 200, [
-                'nome' => $user['nome'],
-                'id' => $user['id']
+            return Response::json(true, 'Login realizado com sucesso.', 200, [
+                'user' => [
+                    'id' => $user['id'],
+                    'nome' => $user['nome'],
+                    'email' => $user['email']
+                ],
             ]);
-            exit();
 
         } catch (Exception $e) {
-            Response::json(false, $e->getMessage(), 400);
-            exit();
+            return Response::json(false, $e->getMessage(), 400);
         }
     }
 }

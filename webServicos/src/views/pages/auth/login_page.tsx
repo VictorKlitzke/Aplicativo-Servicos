@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { postLogin } from '../../services/post';
-import usePreventBack from '../../hooks';
+import { postLogin } from '../../../services/post';
+import usePreventBack from '../../../hooks';
 
 export default function LoginPage() {
     usePreventBack();

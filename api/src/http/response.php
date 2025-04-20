@@ -7,7 +7,7 @@ class Response
     {
         ob_start();
         http_response_code($statusCode);
-        Request::header();
+        Request::handleCors();
 
         echo json_encode([
             'success' => $success,

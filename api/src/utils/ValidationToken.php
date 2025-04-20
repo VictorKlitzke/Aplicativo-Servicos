@@ -16,15 +16,16 @@ class ValidationToken
         return null;
     }
 
-    public static function validateToken()
+    public static function validateToken($token)
     {
-        if (isset($_COOKIE['session_token'])) {
-            $token = $_COOKIE['session_token'];
+        $token = $_COOKIE['session_token'] ?? null;
+
+        if ($token) {
             try {
                 $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
 
-                if (isset($decoded->id)) {
-                    return $decoded->id;
+                if (isset($decoded->sub)) {
+                    return $decoded->sub;
                 }
                 return null;
             } catch (Exception $e) {
@@ -32,6 +33,7 @@ class ValidationToken
                 return null;
             }
         }
+
         return null;
     }
 }

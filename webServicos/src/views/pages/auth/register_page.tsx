@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { formatPhone } from '../../utils';
-import { postRegister } from '../../services/post';
+import { formatPhone } from '../../../utils';
+import { postRegister } from '../../../services/post';
 
 export default function RegisterPage() {
     const [name, setName] = useState('');

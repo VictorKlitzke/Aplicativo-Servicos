@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Row, Col } from 'react-bootstrap';
-import getLogin from '../../../services/get';
-
+import { getLogin } from '../../../services/get';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -26,8 +25,7 @@ export default function ProfilePage() {
         const fetchProfile = async () => {
             try {
                 const result = await getLogin(); 
-                console.log(result)
-                setProfile(result);
+                setProfile(result.getLogin);
                 if (result.foto_perfil) {
                     setPreview(`${apiUrl}uploads/${result.foto_perfil}`); 
                 }

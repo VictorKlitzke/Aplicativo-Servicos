@@ -1,14 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
-import LoginPage from "../views/pages/login_page";
-import RegisterPage from "../views/pages/register_page";
+import LoginPage from "../views/pages/auth/login_page";
+import RegisterPage from "../views/pages/auth/register_page";
 import HomePage from "../views/home_page";
 import Layout from '../layout/layout';
 import PrivateRoute from './privateRouter';
-import CreateServicePage from '../views/pages/servicos/createServices_page';
-import MyServicesPage from '../views/pages/servicos/myServices_page';
 import ConfigPage from '../views/pages/config/config_page';
 import NotFoundPage from '../error/Founderror';
 import ProfilePage from '../views/pages/profile/profile_page';
+import MyCategorysPage from '../views/pages/categorys/mycategorys_page';
+import CreateServicePage from '../views/pages/servicos/createservices_page';
+import MyServicesPage from '../views/pages/servicos/myservices_page';
 
 export default function AppRouters() {
     return (
@@ -28,9 +29,9 @@ export default function AppRouters() {
                 <Route path="/createservices" element={<CreateServicePage />} />
                 <Route path="/config" element={<ConfigPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/mycategory" element={<MyCategorysPage />} />
             </Route>
 
-            {/* Rota pra erro 404 */}
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
