@@ -1,5 +1,5 @@
 import { Tag } from "lucide-react";
-import ListPage from "../list_page";
+import ListPage from "../base/list_page";
 import { Categoria } from "../../../interface";
 import { useEffect, useState } from "react";
 import { getCategorys } from "../../../services/get";
@@ -24,7 +24,7 @@ export default function MyCategorysPage() {
   return (
     <ListPage
       title="Categorias"
-      createLink="/createcategory/nova"
+      createLink="/createcategory/new"
       items={categorys}
       icon={<Tag size={24} />}
       renderItem={(categoria) => (

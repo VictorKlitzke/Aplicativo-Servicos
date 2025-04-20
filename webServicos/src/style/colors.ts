@@ -9,6 +9,7 @@ const colors = {
     info: '#17a2b8', // cor para informações
     light: '#f8f9fa', // cor de fundo clara
     dark: 'rgb(28, 28, 28)', // cor de texto escuro
+    readonly: 'rgba(76, 76, 76, 0.55)',
     white: '#ffffff', // cor branca
   };
   

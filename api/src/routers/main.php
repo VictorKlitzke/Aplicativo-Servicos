@@ -4,6 +4,7 @@ use App\Http\Routers;
 
 Routers::post("/postLogin", "Post@postLogin");
 Routers::post("/postRegisterUsers", "Post@postRegisterUsers");
+Routers::post("/postCategoryServices", "Post@postCategoryServices");
 
 
 Routers::get("/validateToken", "token@validateToken");

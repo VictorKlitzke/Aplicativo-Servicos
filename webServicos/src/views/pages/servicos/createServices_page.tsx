@@ -1,10 +1,20 @@
-// src/views/pages/servicos/CreateService.tsx
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CreatePage from "../base/create_page";
+import { Categoria, MessageInterface } from "../../../interface";
+import MessageComponets from "../../../components/modal/message_components";
+import { getCategorys, getCEP } from "../../../services/get";
 
 export default function CreateServicePage() {
   const navigate = useNavigate();
+  const [modal, setModal] = useState<MessageInterface>({
+    show: false,
+    message: "",
+    type: "info",
+  });
+
+  const [categorias, setCategorys] = useState<Categoria[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     titulo: "",
@@ -13,10 +23,55 @@ export default function CreateServicePage() {
     descricao: "",
     tempoExecucao: "",
     cidade: "",
+    cep: "",
     estado: "",
-    tipoAtendimento: "presencial", // presencial, online, ambos
+    tipoAtendimento: "presencial",
     imagem: "",
   });
+
+  useEffect(() => {
+    const fetchCategorys = async () => {
+      setLoading(true);
+      try {
+        const result = await getCategorys();
+        setCategorys(result.getCategorys);
+      } catch (error) {
+        setModal({ show: true, message: "Erro ao buscar as categorias.", type: "error" });
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategorys();
+  }, []);
+
+  const fetchCEP = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const updatedValue = name === "cep" ? value.replace(/\D/g, "") : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: updatedValue,
+    }));
+
+    if (name === "cep" && updatedValue.length === 8) {
+      try {
+        const endereco = await getCEP(updatedValue);
+        setFormData((prev) => ({
+          ...prev,
+          cidade: endereco.getCEP.city || "",
+          estado: endereco.getCEP.state || "",
+        }));
+      } catch (error) {
+        setModal({
+          show: true,
+          message: "CEP inválido ou não encontrado.",
+          type: "error",
+        });
+        console.error("Erro ao buscar CEP:", error);
+      }
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,125 +79,121 @@ export default function CreateServicePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    validateForm();
     console.log("Serviço cadastrado:", formData);
     navigate("/meus-servicos");
   };
 
+  const validateForm = () => {
+    return (
+      formData.titulo &&
+      formData.categoria &&
+      formData.preco &&
+      formData.cep &&
+      formData.tempoExecucao &&
+      formData.cidade &&
+      formData.estado
+    );
+  };
+
   return (
-    <div className="container-fluid p-4">
-      <h3 className="mb-4">➕ Cadastrar Novo Serviço</h3>
-      <form onSubmit={handleSubmit} className="row g-3">
-        <div className="col-md-6">
-          <label className="form-label">Título do Serviço</label>
-          <input
-            type="text"
-            className="form-control"
-            name="titulo"
-            value={formData.titulo}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Categoria</label>
-          <input
-            type="text"
-            className="form-control"
-            name="categoria"
-            value={formData.categoria}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Preço (R$)</label>
-          <input
-            type="number"
-            className="form-control"
-            name="preco"
-            value={formData.preco}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Tempo Estimado de Execução</label>
-          <input
-            type="text"
-            className="form-control"
-            name="tempoExecucao"
-            placeholder="Ex: 1h, 2 dias, etc."
-            value={formData.tempoExecucao}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Cidade</label>
-          <input
-            type="text"
-            className="form-control"
-            name="cidade"
-            value={formData.cidade}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Estado</label>
-          <input
-            type="text"
-            className="form-control"
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">Tipo de Atendimento</label>
-          <select
-            className="form-select"
-            name="tipoAtendimento"
-            value={formData.tipoAtendimento}
-            onChange={handleChange}
-          >
-            <option value="presencial">Presencial</option>
-            <option value="online">Online</option>
-            <option value="ambos">Ambos</option>
-          </select>
-        </div>
-
-        <div className="col-md-6">
-          <label className="form-label">URL da Imagem do Serviço (opcional)</label>
-          <input
-            type="text"
-            className="form-control"
-            name="imagem"
-            value={formData.imagem}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="col-12">
-          <label className="form-label">Descrição</label>
-          <textarea
-            className="form-control"
-            rows={5}
-            name="descricao"
-            value={formData.descricao}
-            onChange={handleChange}
-            required
-          ></textarea>
-        </div>
-
-        <div className="col-12 d-flex justify-content-end">
-          <button type="submit" className="btn btn-success px-4">Salvar Serviço</button>
-        </div>
-      </form>
-    </div>
+    <>
+      <CreatePage
+        title="➕ Cadastrar Novo Serviço"
+        onSubmit={handleSubmit}
+        submitLabel="Salvar Serviço"
+        fields={[
+          {
+            label: "Título do Serviço",
+            name: "titulo",
+            type: "text",
+            value: formData.titulo,
+            onChange: handleChange,
+          },
+          {
+            label: "Categoria",
+            name: "categoria",
+            type: "select",
+            value: formData.categoria,
+            onChange: handleChange,
+            options: categorias.map((categoria) => ({
+              label: categoria.CATEGORIA,
+              value: String(categoria.ID),
+            })),
+          },
+          {
+            label: "Preço (R$)",
+            name: "preco",
+            type: "number",
+            value: formData.preco,
+            onChange: handleChange,
+          },
+          {
+            label: "Tempo Estimado de Execução",
+            name: "tempoExecucao",
+            type: "text",
+            value: formData.tempoExecucao,
+            onChange: handleChange,
+          },
+          {
+            label: "CEP",
+            name: "cep",
+            type: "number",
+            value: formData.cep,
+            onChange: fetchCEP,
+          },
+          {
+            label: "Cidade",
+            name: "cidade",
+            type: "text",
+            value: formData.cidade,
+            readonly: true,
+            onChange: handleChange,
+          },
+          {
+            label: "Estado",
+            name: "estado",
+            type: "text",
+            value: formData.estado,
+            readonly: true,
+            onChange: handleChange,
+          },
+          {
+            label: "Tipo de Atendimento",
+            name: "tipoAtendimento",
+            type: "select",
+            value: formData.tipoAtendimento,
+            onChange: handleChange,
+            options: [
+              { label: "Presencial", value: "presencial" },
+              { label: "Online", value: "online" },
+              { label: "Ambos", value: "ambos" },
+            ],
+          },
+          {
+            label: "URL da Imagem do Serviço (opcional)",
+            name: "imagem",
+            type: "text",
+            value: formData.imagem,
+            onChange: handleChange,
+          },
+          {
+            label: "Descrição",
+            name: "descricao",
+            type: "textarea",
+            value: formData.descricao,
+            onChange: handleChange,
+          },
+        ]}
+      />
+      {loading && <div>Carregando categorias...</div>} {/* Indicador de carregamento */}
+      <MessageComponets
+        show={modal.show}
+        type={modal.type}
+        title={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ ...modal, show: false })}
+      />
+    </>
   );
 }

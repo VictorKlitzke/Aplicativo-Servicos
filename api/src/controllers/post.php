@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\libs\Libs;
 use App\Services\Db;
 use App\Utils\Input;
 use App\Http\Response;
@@ -21,11 +22,12 @@ class Post
     public function postRegisterUsers()
     {
         $data = Input::data();
-        $name = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $phone = $data['telefone'];
-        $userType = $data['userType'];
+
+        $name = $data['nome'] ?? null;
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+        $phone = $data['telefone'] ?? null;
+        $userType = $data['userType'] ?? null;
 
         Validator::validator([
             'userType' => $userType,
@@ -36,65 +38,68 @@ class Post
 
         try {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            $dadosInsert = [
+                'nome' => $name,
+                'email' => $email,
+                'senha' => $hashed_password,
+                'telefone' => $phone,
+                'tipo' => $userType
+            ];
+
             $pdo = self::getDbConnection();
-            $stmt = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, telefone, tipo) 
-                                VALUES (:nome, :email, :senha, :telefone, :tipo)");
-            $stmt->bindParam("nome", $name, PDO::PARAM_STR);
-            $stmt->bindParam("email", $email, PDO::PARAM_STR);
-            $stmt->bindParam("telefone", $phone, PDO::PARAM_STR);
-            $stmt->bindParam("senha", $hashed_password, PDO::PARAM_STR);
-            $stmt->bindParam("tipo", $userType, PDO::PARAM_STR);
+            $resultado = Libs::insertDB('usuarios', $dadosInsert, $pdo);
 
-            $stmt->execute();
+            Response::json(true, 'Usuário cadastrado com sucesso.', 200, ['id' => $resultado['id']]);
 
-            // $id_prof = $pdo->lastInsertId();
-
-            // $prof = $pdo->prepare("INSERT INTO profissional () VALUES ()");
-
-            Response::json(true, 'Login realizado com sucesso.', 200);
-            exit();
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
         }
     }
+
     public function postCategoryServices()
     {
-
         $token = ValidationToken::getBearerToken();
         $userId = ValidationToken::validateToken($token);
+
+        Validator::validator(['userId' => $userId]);
         $data = Input::data();
 
-        $services = $data['services'];
-        $description = $data['description'];
+        $categoria = $data['categoria'] ?? null;
 
         Validator::validator([
-            'services' => $services,
-            'description' => $description
+            'categoria' => $categoria
         ]);
 
         try {
             $pdo = self::getDbConnection();
-            $stmt = $pdo->prepare("INSERT INTO categorias_servicos (nome, descricao) VALUES (:nome, :descricao)");
-            $stmt->bindParam("descricao", $description, PDO::PARAM_STR);
-            $stmt->bindParam("nome", $services, PDO::PARAM_STR);
 
-            $stmt->execute();
+            $filters = ['nome LIKE' => $categoria ];
 
-            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $result = Libs::selectDB("categorias_servicos", $pdo, $filters);
 
-            Response::json(true, 'Categorias cadastradas com sucesso.', 200, ['id' => $pdo->lastInsertId()]);
+            if ($result > 0) {
+                Response::json(false, 'Categoria já cadastrada', 400);
+            }
+
+            $dadosInsert = [
+                'nome' => $categoria,
+                'usuario_id' => $userId
+            ];
+
+            $resultado = Libs::insertDB('categorias_servicos', $dadosInsert, $pdo);
+
+            Response::json(true, 'Categoria cadastrada com sucesso.', 200);
 
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
         }
     }
+
     public function postLogin()
     {
         try {
             $data = Input::data();
-
-
-
             $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
             $password = $data['senha'];
 

@@ -10,6 +10,7 @@ import ProfilePage from '../views/pages/profile/profile_page';
 import MyCategorysPage from '../views/pages/categorys/mycategorys_page';
 import CreateServicePage from '../views/pages/servicos/createservices_page';
 import MyServicesPage from '../views/pages/servicos/myservices_page';
+import CreateCategorysPage from '../views/pages/categorys/createcategory';
 
 export default function AppRouters() {
     return (
@@ -26,10 +27,11 @@ export default function AppRouters() {
             >
                 <Route path="/homePage" element={<HomePage />} />
                 <Route path="/myservices" element={<MyServicesPage />} />
-                <Route path="/createservices" element={<CreateServicePage />} />
+                <Route path="/createservices/new" element={<CreateServicePage />} />
                 <Route path="/config" element={<ConfigPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/mycategory" element={<MyCategorysPage />} />
+                <Route path="/createcategory/new" element={<CreateCategorysPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

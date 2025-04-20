@@ -2,7 +2,7 @@
 namespace App\Controllers;
 
 use App\Http\Request;
-use App\Utils\Response;
+use App\Http\Response;
 use App\Utils\ValidationToken;
 use Exception;
 
@@ -12,8 +12,8 @@ class ApiExterna
     public static function getCEP(string $CEP)
     {
         try {
-            $token = ValidationToken::getBearerToken() ?: Response::json(false, 'Token não fornecido.', 401);
-            ValidationToken::validateToken($token) ?: Response::json(false, 'Token inválido.', 401);
+            $token = ValidationToken::getBearerToken() ;
+            ValidationToken::validateToken($token);
 
             $configUrl = BASE_PATH . '/config/config.php';
             $configContent = file_get_contents($configUrl);
@@ -48,7 +48,7 @@ class ApiExterna
 
             $data = json_decode($response, true);
 
-            Response::json(true, "CEP encontrado.", 200, ["endereco" => $data]);
+            Response::json(true, "CEP encontrado.", 200, ["getCEP" => $data]);
 
         } catch (Exception $e) {
             Response::json(false, "Erro ao buscar CEP: " . $e->getMessage(), 500);

@@ -11,6 +11,10 @@ export interface LoginData {
     senha: string;
 }
 
+export interface RegisterCategory {
+  categoria: string;
+}
+
 export interface Categoria {
     ID: number;
     CATEGORIA: string;
@@ -25,3 +29,21 @@ export interface Service {
     DURACAOSERVICO: Float32Array;
     PRECO: Float32Array;
   }
+
+  export type ModalType = "success" | "error" | "warning" | "info";
+  export interface MessageInterface {
+    show: boolean;
+    type: ModalType;
+    message: string;
+    title?: string;
+  }
+  
+export interface DetailsInteface {
+  show: boolean;
+  title: string;
+  children: React.ReactNode;
+  onClose: () => void;
+  footer?: React.ReactNode;
+  size?: "sm" | "lg" | "xl";
+  centered?: boolean;
+}

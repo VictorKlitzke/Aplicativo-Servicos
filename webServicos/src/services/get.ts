@@ -46,6 +46,7 @@ const getServices = async () => {
         throw error;
     }
 };
+
 const getCategorys = async () => {
     try {
         if (!apiUrl) {
@@ -65,10 +66,35 @@ const getCategorys = async () => {
         return result;
 
     } catch (error) {
-        console.error('Erro ao buscar perfil na API:', error);
+        console.error('Erro ao buscar categoria na API:', error);
+        throw error;
+    }
+};
+const getCEP = async (cep: string) => {
+    try {
+        if (!apiUrl) {
+            throw new Error('A URL da API não está definida no .env');
+        }
+
+        console.log(cep)
+
+        const response = await fetch(`${apiUrl}getCEP/${cep}`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${result}`);
+        }
+
+        return result;
+
+    } catch (error) {
+        console.error('Erro ao buscar CEP na API:', error);
         throw error;
     }
 };
 
 
-export {getLogin, getServices, getCategorys};
+export { getLogin, getServices, getCategorys, getCEP };

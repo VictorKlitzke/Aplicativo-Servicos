@@ -1,10 +1,10 @@
 import { FileText, Eye } from "lucide-react";
-import ListPage from "../list_page";
+import ListPage from "../base/list_page";
 import { useEffect, useState } from "react";
 import { getServices } from "../../../services/get";
 import { Service } from "../../../interface";
 import { Button } from "react-bootstrap";
-import ModalComponents from "../../../components/modal/modal_components";
+import ModalComponents from "../../../components/modal/details_components";
 
 export default function MyServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -37,7 +37,7 @@ export default function MyServicesPage() {
     <>
       <ListPage
         title="Meus Serviços"
-        createLink="/createservices"
+        createLink="/createservices/new"
         items={services}
         icon={<FileText size={24} />}
         renderItem={(service) => (

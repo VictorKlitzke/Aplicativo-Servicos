@@ -1,14 +1,5 @@
 import { Modal } from "react-bootstrap";
-
-interface ModalComponents {
-  show: boolean;
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-  footer?: React.ReactNode;
-  size?: "sm" | "lg" | "xl";
-  centered?: boolean;
-}
+import { DetailsInteface } from "../../interface";
 
 export default function ModalComponents({
   show,
@@ -18,7 +9,7 @@ export default function ModalComponents({
   footer,
   size = "lg",
   centered = true,
-}: ModalComponents) {
+}: DetailsInteface) {
   return (
     <Modal
       show={show}
