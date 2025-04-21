@@ -1,4 +1,4 @@
-import { RegisterData, LoginData, RegisterCategory } from "../interface";
+import { RegisterData, LoginData, RegisterCategory, ServicesData } from "../interface";
 import Cookies from 'js-cookie';
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -12,6 +12,35 @@ const postRegister = async (data: RegisterData) => {
 
         const response = await fetch(`${apiUrl}postRegisterUsers`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha ao registrar');
+        }
+
+        const result = await response.json();
+
+        return result;
+    } catch (error) {
+        console.error('Erro no registro:', error);
+        throw error;
+    }
+};
+
+const postServices = async (data: ServicesData) => {
+    try {
+
+        if (!apiUrl) {
+            throw new Error('URL da API não definida');
+        }
+
+        const response = await fetch(`${apiUrl}postServices`, {
+            method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -87,4 +116,4 @@ const postLogin = async (data: LoginData) => {
     }
 }
 
-export { postRegister, postLogin, postCategorys };
+export { postRegister, postLogin, postCategorys, postServices };

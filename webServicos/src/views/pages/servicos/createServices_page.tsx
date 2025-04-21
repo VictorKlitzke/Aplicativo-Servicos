@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreatePage from "../base/create_page";
-import { Categoria, MessageInterface } from "../../../interface";
+import { Categoria, MessageInterface, ServicesData } from "../../../interface";
 import MessageComponets from "../../../components/modal/message_components";
 import { getCategorys, getCEP } from "../../../services/get";
+import { postServices } from "../../../services/post";
 
 export default function CreateServicePage() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function CreateServicePage() {
   const [categorias, setCategorys] = useState<Categoria[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ServicesData>({
     titulo: "",
     categoria: "",
     preco: "",
@@ -36,7 +37,11 @@ export default function CreateServicePage() {
         const result = await getCategorys();
         setCategorys(result.getCategorys);
       } catch (error) {
-        setModal({ show: true, message: "Erro ao buscar as categorias.", type: "error" });
+        setModal({
+          show: true,
+          message: "Erro ao buscar as categorias.",
+          type: "error",
+        });
         console.error(error);
       } finally {
         setLoading(false);
@@ -45,7 +50,11 @@ export default function CreateServicePage() {
     fetchCategorys();
   }, []);
 
-  const fetchCEP = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const fetchCEP = async (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     const updatedValue = name === "cep" ? value.replace(/\D/g, "") : value;
 
@@ -73,15 +82,43 @@ export default function CreateServicePage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    validateForm();
-    console.log("Serviço cadastrado:", formData);
-    navigate("/meus-servicos");
+
+    if (!isNaN(Number(formData.preco))) {
+      formData.preco = `R$ ${parseFloat(formData.preco).toFixed(2)}`;
+    }
+
+    console.log(formData)
+
+    if (validateForm()) {
+      const response = await postServices(formData);
+
+      if (response.success) {
+        setModal({
+          show: true,
+          message: "Sucesso, serviço registrado",
+          type: "success",
+        });
+
+        navigate('/myservices');
+      }
+    } else {
+      console.log("Por favor, preencha todos os campos obrigatórios.");
+      setModal({
+        show: true,
+        message: "Por favor, preencha todos os campos obrigatórios.",
+        type: "error",
+      });
+    }
   };
 
   const validateForm = () => {
@@ -89,6 +126,7 @@ export default function CreateServicePage() {
       formData.titulo &&
       formData.categoria &&
       formData.preco &&
+      formData.tempoExecucao &&
       formData.cep &&
       formData.tempoExecucao &&
       formData.cidade &&
@@ -122,18 +160,27 @@ export default function CreateServicePage() {
             })),
           },
           {
-            label: "Preço (R$)",
+            label:
+              formData.preco === "custom" ? "Digite o valor (R$)" : "Preço",
             name: "preco",
-            type: "number",
+            type: formData.preco === "custom" ? "number" : "text",
             value: formData.preco,
             onChange: handleChange,
           },
           {
             label: "Tempo Estimado de Execução",
             name: "tempoExecucao",
-            type: "text",
+            type: "select",
             value: formData.tempoExecucao,
             onChange: handleChange,
+            options: [
+              { label: "Menos de 30 minutos", value: "menos_30_min" },
+              { label: "30 minutos a 1 hora", value: "30_60_min" },
+              { label: "1 a 2 horas", value: "1_2_horas" },
+              { label: "1 dia", value: "1_dia" },
+              { label: "Vários dias", value: "varios_dias" },
+              { label: "A combinar", value: "a_combinar" },
+            ],
           },
           {
             label: "CEP",
@@ -170,13 +217,13 @@ export default function CreateServicePage() {
               { label: "Ambos", value: "ambos" },
             ],
           },
-          {
-            label: "URL da Imagem do Serviço (opcional)",
-            name: "imagem",
-            type: "text",
-            value: formData.imagem,
-            onChange: handleChange,
-          },
+          // {
+          //   label: "URL da Imagem do Serviço (opcional)",
+          //   name: "imagem",
+          //   type: "text",
+          //   value: formData.imagem,
+          //   onChange: handleChange,
+          // },
           {
             label: "Descrição",
             name: "descricao",
@@ -186,7 +233,7 @@ export default function CreateServicePage() {
           },
         ]}
       />
-      {loading && <div>Carregando categorias...</div>} {/* Indicador de carregamento */}
+      {loading && <div>Carregando categorias...</div>}
       <MessageComponets
         show={modal.show}
         type={modal.type}

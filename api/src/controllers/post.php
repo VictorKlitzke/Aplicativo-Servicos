@@ -19,15 +19,65 @@ class Post
         return Db::connection();
     }
 
+    public static function postServices()
+    {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+        Validator::validator(['userId' => $userId]);
+
+        $data = Input::data();
+
+        $titulo = $data['titulo'];
+        $categoria = $data['categoria'];
+        $preco = $data['preco'];
+        $descricao = $data['descricao'];
+        $tempoExecucao = $data['tempoExecucao'];
+        $cidade = $data['cidade'];
+        $cep = $data['cep'];
+        $estado = $data['estado'];
+        $tipoAtendimento = $data['tipoAtendimento'];
+        $imagem = $data['imagem'];
+        $ativo = 1;
+
+        Validator::validator(['titulo' => $titulo, 'categoria' => $categoria, 'descricao' => $descricao, 'preco' => $preco]);
+
+        try {
+            $insertData = [
+                'titulo' => $titulo,
+                'categoria_id' => $categoria,
+                'preco' => $preco,
+                'descricao' => $descricao,
+                'tempo_execucao' => $tempoExecucao,
+                'cidade' => $cidade,
+                'cep' => $cep,
+                'estado' => $estado,
+                'tipo_atendimento' => $tipoAtendimento,
+                'imagem' => $imagem,
+                'user_id' => $userId,
+                'ativo' => $ativo,
+                'created_at' => date('Y-m-d H:i:s'),
+            ];
+
+            $pdo = self::getDbConnection();
+
+            $result = Libs::insertDB('servicos', $insertData, $pdo);
+
+            Response::json(true, 'Serviço cadastrado com sucesso.', 200);
+        } catch (Exception $e) {
+            Response::json(false, $e->getMessage(), 400);
+        }
+    }
+
+
     public function postRegisterUsers()
     {
         $data = Input::data();
 
-        $name = $data['nome'] ?? null;
-        $email = $data['email'] ?? null;
-        $password = $data['password'] ?? null;
-        $phone = $data['telefone'] ?? null;
-        $userType = $data['userType'] ?? null;
+        $name = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $phone = $data['telefone'];
+        $userType = $data['userType'];
 
         Validator::validator([
             'userType' => $userType,
@@ -65,7 +115,7 @@ class Post
         Validator::validator(['userId' => $userId]);
         $data = Input::data();
 
-        $categoria = $data['categoria'] ?? null;
+        $categoria = $data['categoria'];
 
         Validator::validator([
             'categoria' => $categoria
@@ -74,7 +124,7 @@ class Post
         try {
             $pdo = self::getDbConnection();
 
-            $filters = ['nome LIKE' => $categoria ];
+            $filters = ['nome LIKE' => $categoria];
 
             $result = Libs::selectDB("categorias_servicos", $pdo, $filters);
 

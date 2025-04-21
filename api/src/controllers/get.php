@@ -33,17 +33,12 @@ class Get
                 ],
                 [
                     "type" => "INNER",
-                    "table" => "PROFISSIONAIS P",
-                    "on" => "P.ID = S.PROFISSIONAL_ID",
-                ],
-                [
-                    "type" => "INNER",
                     "table" => "USUARIOS U",
-                    "on" => "U.ID = P.USUARIO_ID",
+                    "on" => "U.ID = S.USER_ID",
                 ],
             ];
 
-            $filters = ['P.USUARIO_ID' => $userId];
+            $filters = ['S.USER_ID' => $userId];
 
             $select_coluns = '
                             S.ID,
@@ -51,7 +46,7 @@ class Get
                             CS.NOME CATEGORIA,
                             S.DESCRICAO DESCRICAOSERVICO,
                             S.PRECO,
-                            S.DURACAO DURACAOSERVICO,
+                            S.tempo_execucao DURACAOSERVICO,
                             U.NOME PROFISSIONAL';
             $result = Libs::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
 

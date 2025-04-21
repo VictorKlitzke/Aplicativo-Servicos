@@ -11,6 +11,19 @@ export interface LoginData {
     senha: string;
 }
 
+export interface ServicesData {
+  titulo: string;
+  categoria: string;
+  preco: string;
+  descricao: string;
+  estado: string;
+  cidade: string;
+  cep: string;
+  tipoAtendimento: string;
+  tempoExecucao: string;
+  imagem?: string;
+}
+
 export interface RegisterCategory {
   categoria: string;
 }

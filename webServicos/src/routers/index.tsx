@@ -11,11 +11,13 @@ import MyCategorysPage from '../views/pages/categorys/mycategorys_page';
 import CreateServicePage from '../views/pages/servicos/createservices_page';
 import MyServicesPage from '../views/pages/servicos/myservices_page';
 import CreateCategorysPage from '../views/pages/categorys/createcategory';
+import LandingPage from '../views/pages/landing_page.';
 
 export default function AppRouters() {
     return (
         <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
             <Route
