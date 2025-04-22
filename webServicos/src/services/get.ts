@@ -75,9 +75,7 @@ const getCEP = async (cep: string) => {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
         }
-
-        console.log(cep)
-
+        
         const response = await fetch(`${apiUrl}getCEP/${cep}`, {
             method: 'GET',
             credentials: 'include',

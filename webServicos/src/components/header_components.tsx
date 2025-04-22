@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Users } from "../interface";
+import { getLogin } from "../services/get";
 
 export default function HeaderComponents() {
     const [showCard, setShowCard] = useState(false);
+    const [user, setUser] = useState<Users>();
 
     const handleMouseEnter = () => {
         setShowCard(true);
     };
-
     const handleMouseLeave = () => {
         setShowCard(false);
     };
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const result = await getLogin();
+                setUser(result.getLogin[0]);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchUsers();
+    }, []);
 
     return (
         <header className="bg-light shadow-sm p-3 d-flex justify-content-between align-items-center">
@@ -21,16 +35,17 @@ export default function HeaderComponents() {
                 onMouseLeave={handleMouseLeave}
             >
                 <img
-                    src="https://i.pravatar.cc/40"
+                    src={user?.avatar ? `data:image/jpeg;base64,${user.avatar}` : "F"}
                     alt="avatar"
                     className="rounded-circle"
                     style={{ cursor: 'pointer' }}
                 />
+
                 <span
                     className="d-flex align-items-center"
                     style={{ cursor: 'pointer' }}
                 >
-                    Olá, Victor
+                    Olá, {user?.nome}
                 </span>
 
                 {showCard && (
