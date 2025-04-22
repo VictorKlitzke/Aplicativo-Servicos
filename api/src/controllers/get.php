@@ -61,7 +61,8 @@ class Get
             Response::json(false, 'Erro ao obter serviços: ' . $e->getMessage(), 500);
         }
     }
-    public static function getCategorys() {
+    public static function getCategorys()
+    {
         $token = ValidationToken::getBearerToken();
         $userId = ValidationToken::validateToken($token);
 
@@ -85,7 +86,7 @@ class Get
             Response::json(true, 'Lista de categorias.', 200, ['getCategorys' => $result]);
 
         } catch (Exception $e) {
-            Response::json(false, 'Erro ao buscar dados do banco de dados: '. $e->getMessage(), 500);
+            Response::json(false, 'Erro ao buscar dados do banco de dados: ' . $e->getMessage(), 500);
         }
     }
     public static function getLogin()
@@ -97,14 +98,22 @@ class Get
 
         try {
 
+            $joins = [
+                [
+                    'type' => 'INNER',
+                    'table' => 'usuario_perfil up',
+                    'on' => 'u.ID = up.USUARIO_ID',
+                ]
+            ];
+
             $pdo = Db::Connection();
-            $filters = ['id' => $userId];
+            $filters = ['u.id' => $userId];
             $result = Libs::selectDB(
                 'usuarios u',
                 $pdo,
                 $filters,
-                [],
-                'id, nome, email, telefone, cep, estado, cpfcnpj, cidade, foto_perfil, data_cadastro, tipo'
+                $joins,
+                'u.id, u.nome, u.email, u.telefone, u.cep, u.estado, u.cpfcnpj, u.cidade, u.data_cadastro, u.tipo, up.sobre_mim, up.avatar, up.banner, up.instagram'
             );
 
             if ($result == null) {

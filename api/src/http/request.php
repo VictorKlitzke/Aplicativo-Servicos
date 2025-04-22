@@ -5,13 +5,13 @@ class Request
 {
     public static function method(): string
     {
-        return strtoupper($_SERVER["REQUEST_METHOD"] ?? 'GET');
+        return strtoupper($_SERVER["REQUEST_METHOD"]);
     }
 
     public static function handleCors(): void
     {
         $allowedOrigins = [
-            'http://192.168.1.3:5173',
+            'http://192.168.1.6:5173',
         ];
 
         $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
