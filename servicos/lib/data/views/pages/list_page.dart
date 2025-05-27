@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListPage extends StatefulWidget {
+  const ListPage({super.key});
+
+  @override
   _ListPageState createState() => _ListPageState();
 }
 

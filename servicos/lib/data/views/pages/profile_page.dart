@@ -3,6 +3,8 @@ import 'package:servicos/data/core/repository/api_repository.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }

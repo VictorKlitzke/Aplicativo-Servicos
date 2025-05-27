@@ -7,6 +7,8 @@ import 'package:servicos/data/views/components/button_components.dart';
 // import 'package:servicos/data/core/repository/google_api_repository.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }

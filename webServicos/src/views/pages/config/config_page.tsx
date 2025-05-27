@@ -1,24 +1,15 @@
-import React, { useState } from "react";
 import { Bell, User, Settings, Trash2 } from "lucide-react";
+import { useConfigHooks } from "../../../hooks/config_hooks";
 
 export default function ConfigPage() {
-    const [saved, setSaved] = useState(false);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
-    };
-
-    const handleDelete = () => {
-        setShowDeleteConfirm(true);
-    };
-
-    const confirmDelete = () => {
-        setShowDeleteConfirm(false);
-        alert("Conta excluída");
-    };
+    const {
+        confirmDelete,
+        handleDelete,
+        handleSubmit,
+        saved,
+        showDeleteConfirm,
+        setShowDeleteConfirm
+    } = useConfigHooks();
 
     return (
         <div className="container-fluid p-4">

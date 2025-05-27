@@ -5,10 +5,10 @@ class InfiniteListComponents extends StatelessWidget {
   final Color color;
 
   const InfiniteListComponents({
-    Key? key,
+    super.key,
     required this.controller,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

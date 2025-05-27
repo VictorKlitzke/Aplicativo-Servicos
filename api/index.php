@@ -8,7 +8,7 @@ use App\Core\Core;
 define('ENVIRONMENT', getenv('APP_ENV') ?: 'development');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-define('BASE_PATH', 'http://192.168.1.3/Aplicativo/api/src');
+define('BASE_PATH', 'http://192.168.1.5/Aplicativo/api/src');
 
 require __DIR__ . '/vendor/autoload.php';
 

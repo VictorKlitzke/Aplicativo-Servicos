@@ -14,7 +14,8 @@ class PadraoButton extends StatelessWidget {
   final IconData? icon;
   final bool useSpaceBetween;
 
-  PadraoButton({
+  const PadraoButton({
+    super.key,
     required this.onPressed,
     required this.text,
     required this.textColor,

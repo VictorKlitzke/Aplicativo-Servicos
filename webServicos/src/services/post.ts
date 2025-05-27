@@ -105,7 +105,7 @@ const postLogin = async (data: LoginData) => {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || 'Falha ao registrar');
+            throw new Error(errorData.message || 'Falha ao logar');
         }
 
         return await response.json();
@@ -116,4 +116,28 @@ const postLogin = async (data: LoginData) => {
     }
 }
 
-export { postRegister, postLogin, postCategorys, postServices };
+const postLogout = async () => {
+    try {
+        if (!apiUrl) {
+            throw new Error('URL da API não definida');
+        }
+
+        const response = await fetch(`${apiUrl}postLogout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || 'Falha ao fazer logout');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Erro ao fazer logout:', error);
+        Cookies.remove('session_token');
+        throw error;
+    }
+}
+
+export { postRegister, postLogin, postCategorys, postServices, postLogout };

@@ -6,6 +6,8 @@ import 'package:servicos/data/views/components/app_colors_components.dart';
 import 'package:servicos/data/views/components/button_components.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -19,6 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   String userType = 'Cliente';
 
+  @override
   void initState() {
     super.initState();
     registerController = RegisterController(

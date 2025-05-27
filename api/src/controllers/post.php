@@ -124,7 +124,7 @@ class Post
         try {
             $pdo = self::getDbConnection();
 
-            $filters = ['nome LIKE' => $categoria];
+            $filters = ['nome LIKE' => $categoria, 'usuario_id' => $userId  ];
 
             $result = Libs::selectDB("categorias_servicos", $pdo, $filters);
 
@@ -145,7 +145,6 @@ class Post
             Response::json(false, $e->getMessage(), 400);
         }
     }
-
     public function postLogin()
     {
         try {
@@ -207,5 +206,15 @@ class Post
             return Response::json(false, $e->getMessage(), 400);
         }
     }
+
+    public static function postLogout()
+    {
+        $token = $_COOKIE['token'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? null);
+
+        !$token ?: Response::json(false, 'Nenhum token encontrado.', 400);
+        setcookie('token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+        Response::json(true, 'Logout realizado com sucesso.', 200);
+    }
+
 }
 ?>

@@ -1,51 +1,23 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { postLogin } from "../../../services/post";
-import usePreventBack from "../../../hooks";
-import { MessageInterface } from "../../../interface";
 import MessageComponets from "../../../components/modal/message_components";
+import LoadingComponents from "../../../components/loading/loading_components";
+import { useLoginHooks } from "../../../hooks/login_hooks";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
-  usePreventBack();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [modal, setModal] = useState<MessageInterface>({
-    show: false,
-    message: "",
-    type: "info",
-  });
-  const navigate = useNavigate();
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const data = {
-      email: email,
-      senha: password,
-    };
-    try {
-      const response = await postLogin(data);
-      if (response.success) {
-        navigate("/homePage");
-      } else {
-        setModal({
-          show: true,
-          message: "Credenciais inválidas.",
-          type: "info",
-        });
-      }
-    } catch (error) {
-      console.error("Erro no login:", error);
-      setModal({
-        show: true,
-        message: "Erro ao tentar logar. Tente novamente mais tarde.",
-        type: "error",
-      });
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoanding,
+    modal,
+    handleLogin,
+    setModal
+  } = useLoginHooks();
 
   return (
     <>
+    <LoadingComponents show={isLoanding} />
       <div
         className="vh-100 d-flex align-items-center justify-content-center"
         style={{

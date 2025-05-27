@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 
 class SidebarViews extends StatelessWidget {
+  const SidebarViews({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

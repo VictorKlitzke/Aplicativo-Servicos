@@ -9,13 +9,17 @@ export interface RegisterData {
 export interface Users {
   nome: string;
   email: string;
-  userType: string;
+  tipo: string;
   avatar: string; 
 }
 
 export interface LoginData {
   email: string;
   senha: string;
+}
+
+export interface LoadingComponentsProps {
+  show: boolean;
 }
 
 export interface ProfileData {
@@ -37,6 +41,11 @@ export interface ProfileData {
   ultimo_login: string;
 }
 
+export interface MessageData {
+  usaurio: number;
+  servico: number;
+  comentario: string;
+}
 
 export interface ServicesData {
   titulo: string;
@@ -66,8 +75,8 @@ export interface Service {
   DESCRICAOSERVICO: string;
   CATEGORIA: string;
   PROFISSIONAL: string;
-  DURACAOSERVICO: Float32Array;
-  PRECO: Float32Array;
+  DURACAOSERVICO: string;
+  PRECO: number;
 }
 
 export type ModalType = "success" | "error" | "warning" | "info";
@@ -87,3 +96,19 @@ export interface DetailsInteface {
   size?: "sm" | "lg" | "xl";
   centered?: boolean;
 }
+
+export interface CommentComponentsProps {
+  placeholder?: string;
+  maxLength?: number;
+  onSubmit?: (comment: string) => void;
+  comments: { user: string; comment: string}[];
+}
+
+export type ListPageProps<T> = {
+  title?: string;
+  createLink?: string; 
+  items: T[];
+  renderItem: (item: T) => React.ReactNode;
+  icon?: React.ReactNode;
+  onNovo?: () => void;
+};

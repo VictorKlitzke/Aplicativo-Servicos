@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:servicos/data/views/components/app_colors_components.dart';
 
 class AddServices extends StatefulWidget {
+  const AddServices({super.key});
+
   @override
   _AddServicesState createState() => _AddServicesState();
 }

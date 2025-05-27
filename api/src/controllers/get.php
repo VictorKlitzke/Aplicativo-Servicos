@@ -55,7 +55,53 @@ class Get
                 Response::json(false, 'Nenhum serviço encontrado para você', 500, ['error' => $result]);
             }
 
-            Response::json(true, 'Lista de serviços', 200, ['getServices' => $result[0]]);
+            Response::json(true, 'Lista de serviços', 200, ['getServices' => $result]);
+
+        } catch (Exception $e) {
+            Response::json(false, 'Erro ao obter serviços: ' . $e->getMessage(), 500);
+        }
+    }
+    public static function getServicesAgendamento(): void
+    {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+
+        Validator::validator(['userId' => $userId]);
+        try {
+
+            $pdo = Db::Connection();
+
+            $joins = [
+                [
+                    "type" => "INNER",
+                    "table" => "CATEGORIAS_SERVICOS CS",
+                    "on" => "CS.ID = S.CATEGORIA_ID",
+                ],
+                [
+                    "type" => "INNER",
+                    "table" => "USUARIOS U",
+                    "on" => "U.ID = S.USER_ID",
+                ],
+            ];
+
+            $filters = [];
+
+            $select_coluns = '
+                            S.ID,
+                            S.TITULO SERVICO,
+                            CS.NOME CATEGORIA,
+                            S.DESCRICAO DESCRICAOSERVICO,
+                            S.PRECO,
+                            S.tempo_execucao DURACAOSERVICO,
+                            U.NOME PROFISSIONAL';
+            $result = Libs::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
+
+
+            if ($result == null) {
+                Response::json(false, 'Nenhum serviço encontrado para você', 500, ['error' => $result]);
+            }
+
+            Response::json(true, 'Lista de serviços para agendamentos', 200, ['getServicesAgendamento' => $result]);
 
         } catch (Exception $e) {
             Response::json(false, 'Erro ao obter serviços: ' . $e->getMessage(), 500);
@@ -124,6 +170,33 @@ class Get
 
         } catch (Exception $e) {
             Response::json(false, 'Erro ao obter usuário: ' . $e->getMessage(), 500);
+        }
+    }
+    public static function getComentarios() {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+        Validator::validator(['userId'=> $userId]);
+
+        try {
+            $joins = [
+                [
+                    "type" => "INNER",
+                    "table"=> "usuarios u",
+                    "on"=> "cs.usuario_id = u.id"
+                ]
+            ];
+            $filters = [];
+            $select_coluns = "u.nome usuario, cs.comentario, cs.servico_id";
+            $pdo = Db::Connection();
+
+            $result = Libs::selectDB("comentarios_servicos cs", $pdo, $filters, $joins, $select_coluns);
+
+            Validator::validator(["result" => $result]);
+
+            Response::json(true,"Sucesso ao buscar comentarios", 200, ["getComentarios" => $result]);
+
+        } catch (Exception $e) {
+            Response::json(false, 'erro ao consultar comentarios no banco de dados'. $e->getMessage(), 500);
         }
     }
 }

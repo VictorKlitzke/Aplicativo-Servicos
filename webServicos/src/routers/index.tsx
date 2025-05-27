@@ -12,6 +12,9 @@ import CreateServicePage from '../views/pages/servicos/createservices_page';
 import MyServicesPage from '../views/pages/servicos/myservices_page';
 import CreateCategorysPage from '../views/pages/categorys/createcategory';
 import LandingPage from '../views/pages/landing_page.';
+import AvailableServicesPage from '../views/pages/servicos/availableservices_page';
+import ServicesDetailsPage from '../views/pages/servicos/details/servicesdetails_page';
+import ConfirmationPage from '../views/pages/servicos/details/confirmtionserives_page';
 
 export default function AppRouters() {
     return (
@@ -34,6 +37,9 @@ export default function AppRouters() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/mycategory" element={<MyCategorysPage />} />
                 <Route path="/createcategory/new" element={<CreateCategorysPage />} />
+                <Route path="/availableservices" element={<AvailableServicesPage />} />
+                <Route path="/servico/:id" element={<ServicesDetailsPage />} />
+                <Route path="/confirmation" element={<ConfirmationPage />} />
             </Route>
 
             <Route path="*" element={<NotFoundPage />} />

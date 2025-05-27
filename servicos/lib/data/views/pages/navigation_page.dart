@@ -4,6 +4,8 @@ import 'package:servicos/data/views/components/app_colors_components.dart';
 import 'package:servicos/data/views/pages/add_services_page.dart';
 
 class NavigationPage extends StatefulWidget {
+  const NavigationPage({super.key});
+
   @override
   _NavigationPageState createState() => _NavigationPageState();
 }
@@ -76,8 +78,8 @@ class _NavigationPageState extends State<NavigationPage> {
                       },
                     );
                   },
-                  child: Icon(Icons.add, color: AppColorsComponents.background),
                   backgroundColor: AppColorsComponents.primaryDark,
+                  child: Icon(Icons.add, color: AppColorsComponents.background),
                 ),
               ),
             ],

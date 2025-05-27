@@ -1,25 +1,11 @@
 import { Tag } from "lucide-react";
 import ListPage from "../base/list_page";
-import { Categoria } from "../../../interface";
-import { useEffect, useState } from "react";
-import { getCategorys } from "../../../services/get";
+import { useMycategorysHooks } from "../../../hooks/mycategory_hooks";
 
 export default function MyCategorysPage() {
-  const [categorys, setCategorys] = useState<Categoria[]>([])
-
-  useEffect(() => {
-    const fetchCategorys = async () => {
-      try {
-        const result = await getCategorys();
-
-        setCategorys(result.getCategorys);
-
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchCategorys();
-  }, [])
+ const {
+  categorys
+ } = useMycategorysHooks();
 
   return (
     <ListPage

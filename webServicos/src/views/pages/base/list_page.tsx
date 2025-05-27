@@ -1,14 +1,6 @@
-import React from "react";
 import { PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-
-type ListPageProps<T> = {
-  title: string;
-  createLink: string;
-  items: T[];
-  renderItem: (item: T) => React.ReactNode;
-  icon?: React.ReactNode;
-};
+import { ListPageProps } from "../../../interface";
 
 export default function ListPage<T>({
   title,
@@ -16,6 +8,7 @@ export default function ListPage<T>({
   items,
   renderItem,
   icon,
+  onNovo,
 }: ListPageProps<T>) {
   return (
     <div className="container-fluid p-4">
@@ -23,15 +16,23 @@ export default function ListPage<T>({
         <h3 className="m-0">
           {icon} {title}
         </h3>
-        <Link to={createLink} className="btn btn-success d-flex align-items-center gap-2">
-          <PlusCircle size={18} /> Novo
-        </Link>
+        {createLink && (
+          <Link
+            onClick={onNovo}
+            to={createLink}
+            className="btn btn-success d-flex align-items-center gap-2"
+          >
+            <PlusCircle size={18} /> Novo
+          </Link>
+        )}
       </div>
 
       <div className="row g-3">
         {items.map((item, index) => (
           <div key={index} className="col-md-6 col-lg-4">
-            {renderItem(item)}
+            <div className="h-100" style={{ minHeight: "300px" }}>
+              {renderItem(item)}
+            </div>
           </div>
         ))}
       </div>

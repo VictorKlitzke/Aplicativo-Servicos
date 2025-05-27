@@ -1,38 +1,18 @@
 import { FileText, Eye } from "lucide-react";
 import ListPage from "../base/list_page";
-import { useEffect, useState } from "react";
-import { getServices } from "../../../services/get";
-import { Service } from "../../../interface";
 import { Button } from "react-bootstrap";
 import ModalComponents from "../../../components/modal/details_components";
+import { useMyServicesHooks } from "../../../hooks/myservices_hooks";
 
 export default function MyServicesPage() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  useEffect(() => {
-    const fecthServices = async () => {
-      try {
-        const result = await getServices();
-        setServices(result.getServices ? [result.getServices] : []);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    fecthServices();
-  }, [])
-
-  const handleOpenModal = (service: Service) => {
-    setSelectedService(service);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedService(null);
-  };
-
+  const {
+    handleCloseModal,
+    handleOpenModal,
+    services,
+    selectedService,
+    showModal
+  } = useMyServicesHooks();
+  
   return (
     <>
       <ListPage
