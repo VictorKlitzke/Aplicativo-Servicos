@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useConfigHooks() {
+export function useConfig() {
     const [saved, setSaved] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 

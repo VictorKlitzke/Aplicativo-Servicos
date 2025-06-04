@@ -41,12 +41,6 @@ export interface ProfileData {
   ultimo_login: string;
 }
 
-export interface MessageData {
-  usaurio: number;
-  servico: number;
-  comentario: string;
-}
-
 export interface ServicesData {
   titulo: string;
   categoria: string;
@@ -77,6 +71,12 @@ export interface Service {
   PROFISSIONAL: string;
   DURACAOSERVICO: string;
   PRECO: number;
+}
+
+export interface Commentarys {
+  message: string,
+  usuario_id: number,
+  servico_id: number;
 }
 
 export type ModalType = "success" | "error" | "warning" | "info";
@@ -112,3 +112,9 @@ export type ListPageProps<T> = {
   icon?: React.ReactNode;
   onNovo?: () => void;
 };
+
+export interface HeaderProps {
+  user: { avatar?: string; nome?: string };
+  notificationsCount: number;
+  onLogout: () => void;
+}

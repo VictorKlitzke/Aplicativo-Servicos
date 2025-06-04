@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useRegisterHooks } from "../../../hooks/register_hooks";
 import { formatPhone } from "../../../utils";
+import { useRegister } from "../../../hooks/auth/useRegister";
 
 export default function RegisterPage() {
     const {
@@ -15,7 +15,7 @@ export default function RegisterPage() {
         password,
         phone,
         typePerson
-    } = useRegisterHooks();
+    } = useRegister();
 
     return (
         <>

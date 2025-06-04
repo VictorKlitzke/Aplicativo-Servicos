@@ -3,7 +3,7 @@ import {
 } from 'react-bootstrap';
 import MessageComponets from '../../../components/modal/message_components';
 import MaskedInput from 'react-maskedinput';
-import { useProfileHooks } from '../../../hooks/profile_hooks';
+import { useProfile } from '../../../hooks/profile/useProfile';
 
 export default function ProfilePage() {
   const {
@@ -15,7 +15,7 @@ export default function ProfilePage() {
     modal, setModal,
     fetchCEP,
     profile
-  } = useProfileHooks();
+  } = useProfile();
 
   return (
     <div className="container mt-5">

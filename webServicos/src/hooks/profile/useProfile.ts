@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { MessageInterface, ProfileData } from "../interface";
-import { getCEP, getLogin } from "../services/get";
-import { updateProfile } from "../services/update";
+import { MessageInterface, ProfileData } from "../../interface";
+import { getCEP, getLogin } from "../../services/get";
+import { updateProfile } from "../../services/update";
 
-export function useProfileHooks() {
+export function useProfile() {
     const [profile, setProfile] = useState<ProfileData>({
         nome: '',
         email: '',

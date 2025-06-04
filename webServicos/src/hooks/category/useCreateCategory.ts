@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { MessageInterface } from "../interface";
-import { postCategorys } from "../services/post";
+import { MessageInterface } from "../../interface";
+import { postCategorys } from "../../services/post";
 
-export function useCreateCategoryHooks() {
+export function useCreateCategory() {
     const [categoria, setCategoria] = useState("");
     const [modal, setModal] = useState<MessageInterface>({
         show: false,

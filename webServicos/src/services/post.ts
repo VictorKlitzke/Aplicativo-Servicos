@@ -1,9 +1,9 @@
-import { RegisterData, LoginData, RegisterCategory, ServicesData } from "../interface";
+import { RegisterData, LoginData, RegisterCategory, ServicesData, Commentarys } from "../interface";
 import Cookies from 'js-cookie';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const postRegister = async (data: RegisterData) => {
+export const postRegister = async (data: RegisterData) => {
     try {
 
         if (!apiUrl) {
@@ -31,7 +31,7 @@ const postRegister = async (data: RegisterData) => {
     }
 };
 
-const postServices = async (data: ServicesData) => {
+export const postServices = async (data: ServicesData) => {
     try {
 
         if (!apiUrl) {
@@ -60,7 +60,7 @@ const postServices = async (data: ServicesData) => {
     }
 };
 
-const postCategorys = async (data: RegisterCategory) => {
+export const postCategorys = async (data: RegisterCategory) => {
     if (!apiUrl) {
         throw new Error('URL da API não definida');
     }
@@ -88,7 +88,7 @@ const postCategorys = async (data: RegisterCategory) => {
     }
 }
 
-const postLogin = async (data: LoginData) => {
+export const postLogin = async (data: LoginData) => {
     try {
         if (!apiUrl) {
             throw new Error('URL da API não definida');
@@ -116,7 +116,7 @@ const postLogin = async (data: LoginData) => {
     }
 }
 
-const postLogout = async () => {
+export const postLogout = async () => {
     try {
         if (!apiUrl) {
             throw new Error('URL da API não definida');
@@ -140,4 +140,28 @@ const postLogout = async () => {
     }
 }
 
-export { postRegister, postLogin, postCategorys, postServices, postLogout };
+export const postCommentarys = async (data: Commentarys) => {
+    try {
+        if (!apiUrl) {
+            throw new Error('URL da API não definida');
+        }
+
+        const response = await fetch(`${apiUrl}postCommentarys`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || 'Falha ao fazer comentario no serviço');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}

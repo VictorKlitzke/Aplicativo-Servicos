@@ -117,7 +117,7 @@ export default function SidebarComponents() {
                         </>
                     )}
 
-                    <Link to="/notificacoes" className="text-white nav-link d-flex align-items-center gap-2">
+                    <Link to="/notification" className="text-white nav-link d-flex align-items-center gap-2">
                         <Bell size={20} /> Notificações
                     </Link>
                     <Link to="/config" className="text-white nav-link d-flex align-items-center gap-2">

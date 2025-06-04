@@ -1,7 +1,7 @@
 import MessageComponets from "../../../components/modal/message_components";
 import LoadingComponents from "../../../components/loading/loading_components";
-import { useLoginHooks } from "../../../hooks/login_hooks";
 import { Link } from "react-router-dom";
+import { useLogin } from "@hooks";
 
 export default function LoginPage() {
   const {
@@ -13,7 +13,7 @@ export default function LoginPage() {
     modal,
     handleLogin,
     setModal
-  } = useLoginHooks();
+  } = useLogin();
 
   return (
     <>

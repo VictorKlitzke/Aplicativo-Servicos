@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { postRegister } from "../services/post";
 import { useNavigate } from "react-router-dom";
+import { postRegister } from "../../services/post";
 
-export function useRegisterHooks() {
+export function useRegister() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

@@ -1,11 +1,11 @@
 import { Tag } from "lucide-react";
 import ListPage from "../base/list_page";
-import { useMycategorysHooks } from "../../../hooks/mycategory_hooks";
+import { useMyCategory } from "../../../hooks/category/useMyCategory";
 
 export default function MyCategorysPage() {
  const {
   categorys
- } = useMycategorysHooks();
+ } = useMyCategory();
 
   return (
     <ListPage

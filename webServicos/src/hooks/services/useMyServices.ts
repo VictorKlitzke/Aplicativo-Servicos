@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Service } from "../interface";
-import { getServices } from "../services/get";
+import { Service } from "../../interface";
+import { getServices } from "../../services/get";
 
-export function useMyServicesHooks() {
+export function useMyServices() {
     const [services, setServices] = useState<Service[]>([]);
     const [selectedService, setSelectedService] = useState<Service | null>(null);
     const [showModal, setShowModal] = useState(false);

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-function usePreventBack() {
+export default function usePreventBack() {
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = () => {
@@ -8,5 +8,3 @@ function usePreventBack() {
     };
   }, []);
 }
-
-export default usePreventBack;

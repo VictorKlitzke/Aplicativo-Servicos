@@ -1,6 +1,6 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-const getLogin = async () => {
+export const getLogin = async () => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -23,7 +23,7 @@ const getLogin = async () => {
         throw error;
     }
 };
-const getServices = async () => {
+export const getServices = async () => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -46,7 +46,7 @@ const getServices = async () => {
         throw error;
     }
 };
-const getServicesAgendamento = async () => {
+export const getServicesAgendamento = async () => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -69,7 +69,7 @@ const getServicesAgendamento = async () => {
         throw error;
     }
 };
-const getCategorys = async () => {
+export const getCategorys = async () => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -92,7 +92,7 @@ const getCategorys = async () => {
         throw error;
     }
 };
-const getCEP = async (cep: string) => {
+export const getCEP = async (cep: string) => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -115,7 +115,7 @@ const getCEP = async (cep: string) => {
         throw error;
     }
 };
-const getComentarys = async (id: string) => {
+export const getComentarys = async (id: string) => {
     try {
         if (!apiUrl) {
             throw new Error('A URL da API não está definida no .env');
@@ -136,6 +136,3 @@ const getComentarys = async (id: string) => {
         console.error(error)
     }
 }
-
-
-export { getLogin, getServices, getCategorys, getCEP, getServicesAgendamento, getComentarys };

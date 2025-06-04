@@ -1,6 +1,6 @@
 import CreatePage from "../base/create_page";
 import MessageComponets from "../../../components/modal/message_components";
-import { useCreateCategoryHooks } from "../../../hooks/createcategory_hook";
+import { useCreateCategory } from "../../../hooks/category/useCreateCategory";
 
 export default function CreateCategorysPage() {
     const {
@@ -9,7 +9,7 @@ export default function CreateCategorysPage() {
         setCategoria,
         categoria,
         setModal
-    } = useCreateCategoryHooks();
+    } = useCreateCategory();
 
     return (
         <>

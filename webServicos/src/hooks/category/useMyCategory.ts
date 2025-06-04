@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Categoria } from "../interface";
-import { getCategorys } from "../services/get";
+import { Categoria } from "../../interface";
+import { getCategorys } from "../../services/get";
 
-export function useMycategorysHooks() {
+export function useMyCategory() {
     const [categorys, setCategorys] = useState<Categoria[]>([])
 
     const fetchCategorys = async () => {

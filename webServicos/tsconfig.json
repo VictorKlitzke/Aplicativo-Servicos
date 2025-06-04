@@ -1,13 +1,12 @@
 {
-  "files": [],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"],
+      "@hooks": ["src/hooks/exports.ts"]
     }
   },
+  "files": [],
   "references": [
     {
       "path": "./tsconfig.app.json"

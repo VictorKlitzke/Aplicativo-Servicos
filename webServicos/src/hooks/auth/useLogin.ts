@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { postLogin } from "../services/post";
-import { MessageInterface } from "../interface";
 import { useState } from "react";
-import usePreventBack from ".";
+import { MessageInterface } from "../../interface";
+import usePreventBack from "..";
+import { postLogin } from "../../services/post";
 
-export function useLoginHooks() {
+export function useLogin() {
     usePreventBack();
     const [email, setEmail] = useState("");
     const [isLoanding, setLoading] = useState(false);

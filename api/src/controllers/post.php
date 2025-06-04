@@ -13,12 +13,6 @@ use PDO;
 
 class Post
 {
-
-    private static function getDbConnection()
-    {
-        return Db::connection();
-    }
-
     public static function postServices()
     {
         $token = ValidationToken::getBearerToken();
@@ -58,16 +52,13 @@ class Post
                 'created_at' => date('Y-m-d H:i:s'),
             ];
 
-            $pdo = self::getDbConnection();
+            $pdo = db::Connection();
 
-            $result = Libs::insertDB('servicos', $insertData, $pdo);
-
-            Response::json(true, 'Serviço cadastrado com sucesso.', 200);
+            return Libs::insertDB('servicos', $insertData, $pdo);
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
         }
     }
-
 
     public function postRegisterUsers()
     {
@@ -97,7 +88,7 @@ class Post
                 'tipo' => $userType
             ];
 
-            $pdo = self::getDbConnection();
+            $pdo = db::Connection();
             $resultado = Libs::insertDB('usuarios', $dadosInsert, $pdo);
 
             Response::json(true, 'Usuário cadastrado com sucesso.', 200, ['id' => $resultado['id']]);
@@ -122,7 +113,7 @@ class Post
         ]);
 
         try {
-            $pdo = self::getDbConnection();
+            $pdo = db::Connection();
 
             $filters = ['nome LIKE' => $categoria, 'usuario_id' => $userId  ];
 
@@ -145,6 +136,7 @@ class Post
             Response::json(false, $e->getMessage(), 400);
         }
     }
+
     public function postLogin()
     {
         try {
@@ -154,7 +146,7 @@ class Post
 
             Validator::validator(['email' => $email, 'password' => $password]);
 
-            $pdo = self::getDbConnection();
+            $pdo = db::Connection();
             $stmt = $pdo->prepare("SELECT 
                                     u.id, 
                                     u.nome, 
@@ -168,13 +160,9 @@ class Post
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$user) {
-                Response::json(false, 'Credenciais inválidas.', 404);
-            }
+            if (!$user) Response::json(false, 'Credenciais inválidas.', 404);
 
-            if (!password_verify($password, $user['senha'])) {
-                Response::json(false, 'Credenciais inválidas.', 404);
-            }
+            if (!password_verify($password, $user['senha'])) Response::json(false, 'Credenciais inválidas.', 404);
 
             $tokenPayload = [
                 'sub' => $user['id'],
@@ -209,11 +197,35 @@ class Post
 
     public static function postLogout()
     {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+        Validator::validator(['userId' => $userId]);
+
         $token = $_COOKIE['token'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? null);
 
         !$token ?: Response::json(false, 'Nenhum token encontrado.', 400);
         setcookie('token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
         Response::json(true, 'Logout realizado com sucesso.', 200);
+    }
+
+    public static function postCommentarys() {
+        $token = ValidationToken::getBearerToken();
+        $userId = ValidationToken::validateToken($token);
+        Validator::validator(['userId' => $userId]);
+
+        $data = Input::data();
+        $data1 = $data['data'];
+
+        $message = $data1['message'];
+        $usuario_id = $data1['usuario_id'];
+        $servicos_id = $data1['servicos_id'];
+
+        Validator::validator(['messagem' => $message, 'usuario' => $usuario_id]);
+        try {
+
+        } catch (Exception $e) {
+            Response::json(false, "erro ao tentar inserir dados: ", 500, ['error' => $e->getMessage()]);
+        }
     }
 
 }
