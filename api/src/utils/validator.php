@@ -2,20 +2,21 @@
 namespace App\Utils;
 
 use App\Http\Response;
-use Exception;
 
 class Validator
 {
-    public static function validator(array $data)
+    public static function validator(array $fields)
     {
-        foreach ($data as $key => $value) {
-            if (!is_scalar($value)) {
-                continue;
+        foreach ($fields as $key => $value) {
+            if (is_array($value)) {
+                self::validator($value);
+            } else {
+                if (empty($value) && $value !== 0) {
+                    Response::json(false, "O campo '{$key}' deve estar preenchido.", 401);
+                }
             }
-            $data[$key] = trim((string) $value);
         }
+        return $fields;
     }
-
 }
-
 ?>

@@ -3,22 +3,20 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use App\libs\Libs;
-use App\Services\Db;
+use App\Database\Db;
+use App\helpers\Helpers;
 use App\Http\Response;
-use App\Utils\ValidationToken;
+use App\Utils\validateToken;
 use App\Utils\Validator;
 use Exception;
-use PDO;
-
 
 class Get
 {
 
     public static function getServices(): void
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
 
         Validator::validator(['userId' => $userId]);
         try {
@@ -48,7 +46,7 @@ class Get
                             S.PRECO,
                             S.tempo_execucao DURACAOSERVICO,
                             U.NOME PROFISSIONAL';
-            $result = Libs::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
+            $result = Helpers::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
 
 
             if ($result == null) {
@@ -63,8 +61,8 @@ class Get
     }
     public static function getServicesAgendamento(): void
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
 
         Validator::validator(['userId' => $userId]);
         try {
@@ -94,7 +92,7 @@ class Get
                             S.PRECO,
                             S.tempo_execucao DURACAOSERVICO,
                             U.NOME PROFISSIONAL';
-            $result = Libs::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
+            $result = Helpers::selectDB("SERVICOS S ", $pdo, $filters, $joins, $select_coluns);
 
 
             if ($result == null) {
@@ -109,15 +107,15 @@ class Get
     }
     public static function getCategorys()
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
 
         Validator::validator(['userId' => $userId]);
 
         try {
             $pdo = Db::Connection();
             $filters = ['usuario_id' => $userId];
-            $result = Libs::selectDB(
+            $result = Helpers::selectDB(
                 'categorias_servicos',
                 $pdo,
                 $filters,
@@ -137,8 +135,8 @@ class Get
     }
     public static function getLogin()
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
 
         Validator::validator(['userId' => $userId]);
 
@@ -154,7 +152,7 @@ class Get
 
             $pdo = Db::Connection();
             $filters = ['u.id' => $userId];
-            $result = Libs::selectDB(
+            $result = Helpers::selectDB(
                 'usuarios u',
                 $pdo,
                 $filters,
@@ -172,31 +170,33 @@ class Get
             Response::json(false, 'Erro ao obter usuário: ' . $e->getMessage(), 500);
         }
     }
-    public static function getComentarios() {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
-        Validator::validator(['userId'=> $userId]);
+
+    public static function getComentarios()
+    {
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
+        Validator::validator(['userId' => $userId]);
 
         try {
             $joins = [
                 [
                     "type" => "INNER",
-                    "table"=> "usuarios u",
-                    "on"=> "cs.usuario_id = u.id"
+                    "table" => "usuarios u",
+                    "on" => "cs.usuario_id = u.id"
                 ]
             ];
             $filters = [];
             $select_coluns = "u.nome usuario, cs.comentario, cs.servico_id";
             $pdo = Db::Connection();
 
-            $result = Libs::selectDB("comentarios_servicos cs", $pdo, $filters, $joins, $select_coluns);
+            $result = Helpers::selectDB("comentarios_servicos cs", $pdo, $filters, $joins, $select_coluns);
 
             Validator::validator(["result" => $result]);
 
-            Response::json(true,"Sucesso ao buscar comentarios", 200, ["getComentarios" => $result]);
+            Response::json(true, "Sucesso ao buscar comentarios", 200, ["getComentarios" => $result]);
 
         } catch (Exception $e) {
-            Response::json(false, 'erro ao consultar comentarios no banco de dados'. $e->getMessage(), 500);
+            Response::json(false, 'erro ao consultar comentarios no banco de dados' . $e->getMessage(), 500);
         }
     }
 }

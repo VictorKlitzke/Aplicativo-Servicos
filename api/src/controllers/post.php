@@ -1,22 +1,21 @@
 <?php
 namespace App\Controllers;
 
-use App\libs\Libs;
-use App\Services\Db;
+use App\Services\authServices;
+use App\Database\Db;
+use App\Helpers\Helpers;
 use App\Utils\Input;
 use App\Http\Response;
-use App\Utils\ValidationToken;
+use App\Utils\validateToken;
 use App\Utils\Validator;
 use Exception;
-use Firebase\JWT\JWT;
-use PDO;
 
 class Post
 {
     public static function postServices()
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
         Validator::validator(['userId' => $userId]);
 
         $data = Input::data();
@@ -52,9 +51,9 @@ class Post
                 'created_at' => date('Y-m-d H:i:s'),
             ];
 
-            $pdo = db::Connection();
+            $pdo = Db::Connection();
 
-            return Libs::insertDB('servicos', $insertData, $pdo);
+            return Helpers::insertDb('servicos', $insertData, $pdo);
         } catch (Exception $e) {
             Response::json(false, $e->getMessage(), 400);
         }
@@ -88,8 +87,8 @@ class Post
                 'tipo' => $userType
             ];
 
-            $pdo = db::Connection();
-            $resultado = Libs::insertDB('usuarios', $dadosInsert, $pdo);
+            $pdo = Db::Connection();
+            $resultado = Helpers::insertDb('usuarios', $dadosInsert, $pdo);
 
             Response::json(true, 'Usuário cadastrado com sucesso.', 200, ['id' => $resultado['id']]);
 
@@ -100,8 +99,8 @@ class Post
 
     public function postCategoryServices()
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
 
         Validator::validator(['userId' => $userId]);
         $data = Input::data();
@@ -113,11 +112,11 @@ class Post
         ]);
 
         try {
-            $pdo = db::Connection();
+            $pdo = Db::Connection();
 
-            $filters = ['nome LIKE' => $categoria, 'usuario_id' => $userId  ];
+            $filters = ['nome LIKE' => $categoria, 'usuario_id' => $userId];
 
-            $result = Libs::selectDB("categorias_servicos", $pdo, $filters);
+            $result = Helpers::selectDb("categorias_servicos", $pdo, $filters);
 
             if ($result > 0) {
                 Response::json(false, 'Categoria já cadastrada', 400);
@@ -128,7 +127,7 @@ class Post
                 'usuario_id' => $userId
             ];
 
-            $resultado = Libs::insertDB('categorias_servicos', $dadosInsert, $pdo);
+            $resultado = Helpers::insertDb('categorias_servicos', $dadosInsert, $pdo);
 
             Response::json(true, 'Categoria cadastrada com sucesso.', 200);
 
@@ -146,50 +145,13 @@ class Post
 
             Validator::validator(['email' => $email, 'password' => $password]);
 
-            $pdo = db::Connection();
-            $stmt = $pdo->prepare("SELECT 
-                                    u.id, 
-                                    u.nome, 
-                                    u.senha,
-                                    u.email
-                                  FROM 
-                                    usuarios u 
-                                  WHERE 
-                                    u.email = :email");
-            $stmt->bindParam(":email", $email, PDO::PARAM_STR);
-            $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$user) Response::json(false, 'Credenciais inválidas.', 404);
-
-            if (!password_verify($password, $user['senha'])) Response::json(false, 'Credenciais inválidas.', 404);
-
-            $tokenPayload = [
-                'sub' => $user['id'],
-                'name' => $user['nome'],
-                'iat' => time(),
-                'exp' => time() + 3600
-            ];
-
-            $token = JWT::encode($tokenPayload, $_ENV['JWT_SECRET'], "HS256");
-
-            setcookie('session_token', $token, [
-                'expires' => time() + 3600,
-                // 'expires' => time() + 15,
-                'path' => '/',
-                'httponly' => true,
-                'samesite' => 'Strict',
-                'secure' => false
-            ]);
+            $authServices = new authServices;
+            $auth = $authServices->login($email, $password);
 
             return Response::json(true, 'Login realizado com sucesso.', 200, [
-                'user' => [
-                    'id' => $user['id'],
-                    'nome' => $user['nome'],
-                    'email' => $user['email']
-                ],
+                'user' => $auth['user'],
+                'token' => $auth['token'],
             ]);
-
         } catch (Exception $e) {
             return Response::json(false, $e->getMessage(), 400);
         }
@@ -197,8 +159,8 @@ class Post
 
     public static function postLogout()
     {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
         Validator::validator(['userId' => $userId]);
 
         $token = $_COOKIE['token'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? null);
@@ -208,9 +170,10 @@ class Post
         Response::json(true, 'Logout realizado com sucesso.', 200);
     }
 
-    public static function postCommentarys() {
-        $token = ValidationToken::getBearerToken();
-        $userId = ValidationToken::validateToken($token);
+    public static function postCommentarys()
+    {
+        $token = validateToken::getBearerToken();
+        $userId = validateToken::validateToken($token);
         Validator::validator(['userId' => $userId]);
 
         $data = Input::data();
