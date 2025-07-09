@@ -23,28 +23,33 @@ class LoginController extends ChangeNotifier {
     final email = emailCtrl.text.trim();
     final senha = senhaCtrl.text.trim();
 
-    final data = {
-      'email': email,
-      'senha': senha
-    };
+    final data = {'email': email, 'senha': senha};
+    _setState(_state.copyWith(isLoading: true));
 
-    print('datae3 $data');
+    try {
+      final success = await AuthRepository().login(data);
 
-    final success = await AuthRepository().login(data);
+      if (!success) {
+        AppDialogWidget(
+          title: "Login",
+          message: "Erro ao efetuar o login",
+          type: DialogType.error,
+        );
+      } else {
+        context.go("/homepage");
+      }
 
-    if (!success) {
+      _setState(_state.copyWith(isLoading: false));
+
+      return success;
+    } catch (error) {
       AppDialogWidget(
-        title: "Login",
-        message: "Erro ao efetuar o login",
+        title: "Erro",
+        message: "Autenticação falhou",
         type: DialogType.error,
       );
-    } else {
-      context.go("/homepage");
+      return false;
     }
-
-    _setState(_state.copyWith(isLoading: false));
-
-    return success;
   }
 
   void disposeControllers() {

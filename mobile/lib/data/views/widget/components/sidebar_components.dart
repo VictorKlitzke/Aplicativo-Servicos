@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/data/views/widget/themes/app_themes_colors.dart';
 
 class SidebarViews extends StatelessWidget {
@@ -26,7 +27,11 @@ class SidebarViews extends StatelessWidget {
                 buildMenuItem("Anunciar Serviços", Icons.campaign_outlined),
                 buildMenuItem("Dados Pessoais", Icons.person_outline),
                 buildMenuItem("Localização", Icons.location_on_outlined),
-                buildMenuItem("Categorias", Icons.category_outlined),
+                buildMenuItem(
+                  "Categorias",
+                  Icons.category_outlined,
+                  ontap: () => context.go('/categorias'),
+                ),
                 buildMenuItem("Sobre", Icons.info_outline, underline: true),
                 buildMenuItem("Segurança", Icons.lock_outline),
               ],
@@ -69,9 +74,14 @@ class SidebarViews extends StatelessWidget {
     );
   }
 
-  Widget buildMenuItem(String title, IconData icon, {bool underline = false}) {
+  Widget buildMenuItem(
+    String title,
+    IconData icon, {
+    bool underline = false,
+    void Function()? ontap,
+  }) {
     return InkWell(
-      onTap: () {},
+      onTap: ontap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),

@@ -67,61 +67,33 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           _buildSectionTitle("Informações Pessoais"),
           const SizedBox(height: 16),
-          AppTextFieldWidget(
-            labelText: "res",
-            icon: Icons.abc,
-            keyboardType: user?["nome"],
-          ),
-          _buildReadOnlyField(label: "Nome", value: user?["nome"]),
-          _buildReadOnlyField(label: "Email", value: user?["email"]),
-          _buildReadOnlyField(label: "Telefone", value: user?["telefone"]),
-          _buildReadOnlyField(label: "Instagram", value: user?["instagram"]),
-          _buildReadOnlyField(
-            label: "Sobre Mim",
-            value: user?["sobre_mim"] ?? "—",
-          ),
-
+          AppTextFieldWidget(labelText: "Nome", icon: Icons.nat, initialValue: user?["nome"]),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Email", icon: Icons.nat, initialValue: user?["email"]),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Telefone", icon: Icons.nat, initialValue: user?["telefone"]),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Instagram", icon: Icons.nat, initialValue: user?["instagram"]),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Sobre Mim", icon: Icons.nat, initialValue: user?["sobre_mim"] ?? "—", readOnly: true),
           const SizedBox(height: 32),
           _buildSectionTitle("Endereço"),
           const SizedBox(height: 16),
-          _buildReadOnlyField(label: "CEP", value: user?["cep"]),
-          _buildReadOnlyField(label: "Cidade", value: user?["cidade"]),
-          _buildReadOnlyField(label: "Estado", value: user?["estado"]),
+          AppTextFieldWidget(labelText: "CEP", icon: Icons.nat, initialValue: user?["cep"]),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Cidade", icon: Icons.nat, initialValue: user?["cidade"], readOnly: true),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Estado", icon: Icons.nat, initialValue: user?["estado"], readOnly: true),
 
           const SizedBox(height: 32),
           _buildSectionTitle("Outros Dados"),
           const SizedBox(height: 16),
-          _buildReadOnlyField(label: "CPF/CNPJ", value: user?["cpfcnpj"]),
-          _buildReadOnlyField(label: "Tipo", value: user?["tipo"]),
-          _buildReadOnlyField(
-            label: "Data de Cadastro",
-            value: user?["data_cadastro"],
-          ),
+          AppTextFieldWidget(labelText: "CPF/CNPJ", icon: Icons.nat, initialValue: user?["cpfcnpj"], readOnly: true),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Tipo", icon: Icons.nat, initialValue: user?["tipo"], readOnly: true),
+          const SizedBox(height: 6),
+          AppTextFieldWidget(labelText: "Data de Cadastro", icon: Icons.nat, initialValue: user?["data_cadastro"], readOnly: true),
         ],
-      ),
-    );
-  }
-
-  Widget _buildReadOnlyField({required String label, required String? value}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        initialValue: value ?? '',
-        readOnly: true,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: AppColors.readonly,
-          labelStyle: const TextStyle(color: AppColors.dark),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        style: const TextStyle(
-          color: AppColors.dark,
-          fontWeight: FontWeight.w600,
-        ),
       ),
     );
   }

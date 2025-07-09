@@ -100,6 +100,7 @@ class HomePage extends ConsumerWidget {
               color: AppColors.primary,
               size: 30,
             ),
+            subtitle: const Text('Contrate seu serviço'),
             title: const Text(
               "Contratar Serviço",
               style: TextStyle(
